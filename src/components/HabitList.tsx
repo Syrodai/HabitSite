@@ -1,8 +1,10 @@
-import { HStack, Button } from "@chakra-ui/react";
+import { Button, List, ListItem } from "@chakra-ui/react";
+//import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
 
 export interface Habit {
     id: number;
     description: string;
+    status: string;
 }
 
 interface Props {
@@ -13,15 +15,15 @@ interface Props {
 
 const HabitList = ({ habits, onHabitFulfilled, onHabitFailed }: Props) => {
     return (
-        <ul>
+        <List>
             {habits.map((habit) =>
-                <li key={habit.id}>
+                <ListItem key={habit.id}>
                     {habit.description}
-                    <Button colorScheme="green" variant="outline" size='md' onClick={() => onHabitFulfilled(habit)} />
-                    <Button colorScheme="red" variant="outline" size='sm' onClick={() => onHabitFailed(habit)} />
-                </li>
+                    <Button colorScheme="green" variant={habit.status==="DONE" ? "solid": "outline"} size='lg' onClick={() => onHabitFulfilled(habit)}>Done!</Button>
+                    <Button colorScheme="red" variant={habit.status === "FAILED" ? "solid" : "outline"} size='sm' onClick={() => onHabitFailed(habit)}>Missed</Button>
+                </ListItem>
             )}
-        </ul>
+        </List>
     )
 }
 
