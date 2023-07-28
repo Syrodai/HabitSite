@@ -1,35 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import HabitList, { Habit } from './components/HabitList';
 
 function App() {
-  const [count, setCount] = useState(0)
+    const habits = [
+        { id: 1, description: "Be good" },
+        { id: 2, description: "Excercise" },
+        { id: 3, description: "Habit #3" },
+    ];
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    const onHabitFulfilled = (habit: Habit) => {
+        console.log(`Habit '${habit.description}' marked as fulfilled`);
+    }
+
+    const onHabitFailed = (habit: Habit) => {
+        console.log(`Habit '${habit.description}' marked as failed`);
+    }
+
+    return (<>
+        <HabitList habits={habits} onHabitFulfilled={onHabitFulfilled} onHabitFailed={onHabitFailed}/>
+    </>)
 }
 
-export default App
+export default App;
