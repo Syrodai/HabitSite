@@ -15,11 +15,11 @@ const HabitList = ({ habits, onHabitFulfilled, onHabitFailed }: Props) => {
     return (
         <ul>
             {habits.map((habit) =>
-                <HStack key= { habit.id }>
-                    <li >{habit.description}</li>
-                    <Button onClick={() => onHabitFulfilled(habit)} />
-                    <Button onClick={() => onHabitFailed(habit)} />
-                </HStack>
+                <li key={habit.id}>
+                    {habit.description}
+                    <Button colorScheme="green" variant="outline" size='md' onClick={() => onHabitFulfilled(habit)} />
+                    <Button colorScheme="red" variant="outline" size='sm' onClick={() => onHabitFailed(habit)} />
+                </li>
             )}
         </ul>
     )
