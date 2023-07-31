@@ -13,22 +13,24 @@ function App() {
     // calendar status history array
 
     const [user, setUser] = useState("Sample User");
-
+    
     const onHabitFulfilled = (habit: Habit) => {
         if (habit.status === "DONE") return;
         console.log(`Habit '${habit.description}' marked as fulfilled`);
         setHabits(habits.map((h: Habit) => h.id === habit.id ? { ...h, status: "DONE" } : h));
     }
-
     const onHabitFailed = (habit: Habit) => {
         if (habit.status === "FAILED") return;
         console.log(`Habit '${habit.description}' marked as failed`);
         setHabits(habits.map((h: Habit) => h.id === habit.id ? { ...h, status: "FAILED" } : h));
     }
+    const deleteHabit = (habit: Habit) => {
+        setHabits(habits.filter((h) => habit.id !== h.id));
+    }
 
     return (<>
         <TopBar username={user}/>
-        <HabitList habits={habits} onHabitFulfilled={onHabitFulfilled} onHabitFailed={onHabitFailed} />
+        <HabitList habits={habits} onHabitFulfilled={onHabitFulfilled} onHabitFailed={onHabitFailed} deleteHabit={deleteHabit} />
     </>)
 }
 

@@ -13,9 +13,10 @@ interface Props {
     habits: Habit[];
     onHabitFulfilled: (habit: Habit) => void;
     onHabitFailed: (habit: Habit) => void;
+    deleteHabit: (habit: Habit) => void;
 }
 
-const HabitList = ({ habits, onHabitFulfilled, onHabitFailed }: Props) => {
+const HabitList = ({ habits, onHabitFulfilled, onHabitFailed, deleteHabit }: Props) => {
     const [hovered, setHovered] = useState<Habit | null>(null);
 
     return (
@@ -23,7 +24,7 @@ const HabitList = ({ habits, onHabitFulfilled, onHabitFailed }: Props) => {
             {habits.map((habit) =>
                 <ListItem key={habit.id} onMouseOver={() => setHovered(habit)} onMouseOut={() => { if (hovered === habit) setHovered(null) }}>
                     <HStack>
-                        {hovered===habit && <QuickEditMenu />}
+                        {hovered === habit && <QuickEditMenu habit={habit} onClickDelete={deleteHabit} />}
                         <Text>{habit.description}</Text>
                         <Button colorScheme="green" variant={habit.status==="DONE" ? "solid": "outline"} size='lg' onClick={() => onHabitFulfilled(habit)}>Done!</Button>
                         <Button colorScheme="red" variant={habit.status === "FAILED" ? "solid" : "outline"} size='sm' onClick={() => onHabitFailed(habit)}>Missed</Button>
