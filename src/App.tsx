@@ -1,15 +1,18 @@
 //import './App.css'
 import { useState } from 'react';
 import HabitList, { Habit } from './components/HabitList';
+import TopBar from './components/TopBar';
 
 function App() {
     const [habits, setHabits] = useState([
         { id: 1, description: "Be good", status: "" },
-        { id: 2, description: "Excercise", status: "DONE" },
+        { id: 2, description: "Exercise", status: "DONE" },
         { id: 3, description: "Habit #3", status: "FAILED" },
     ]);
     // habit start date
     // calendar status history array
+
+    const [user, setUser] = useState("Sample User");
 
     const onHabitFulfilled = (habit: Habit) => {
         if (habit.status === "DONE") return;
@@ -24,7 +27,8 @@ function App() {
     }
 
     return (<>
-        <HabitList habits={habits} onHabitFulfilled={onHabitFulfilled} onHabitFailed={onHabitFailed}/>
+        <TopBar username={user}/>
+        <HabitList habits={habits} onHabitFulfilled={onHabitFulfilled} onHabitFailed={onHabitFailed} />
     </>)
 }
 
