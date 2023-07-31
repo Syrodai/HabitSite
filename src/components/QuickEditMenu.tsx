@@ -1,7 +1,7 @@
 import { HStack } from "@chakra-ui/react";
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import { Habit } from './components/HabitList';
-import { useState } from "react";
+import "../App.css";
 
 interface Props {
     habit: Habit;
@@ -10,20 +10,10 @@ interface Props {
 }
 
 const QuickEditMenu = ({ onClickEdit, onClickDelete, habit }: Props) => {
-    const [hovered, setHovered] = useState<string>("");
-    
-    const MouseOverOpacity = (key: string) => {
-        return {
-            onMouseOver: () => { setHovered(key) },
-            onMouseOut: () => { if (hovered === key) setHovered("") },
-            opacity: hovered===key ? 0.75 : 0.5
-        }
-    }
-
     return (
         <HStack>
-            <DeleteIcon alt="Delete Habit" onClick={() => onClickDelete(habit)} {...MouseOverOpacity('del')}  />
-            <EditIcon alt="Edit Habit" onClick={onClickEdit} {...MouseOverOpacity('edit')} />
+            <DeleteIcon className="icon-opacity" onClick={() => onClickDelete(habit)} />
+            <EditIcon className="icon-opacity" onClick={onClickEdit} />
         </HStack>
     )
 }

@@ -1,6 +1,7 @@
 //import './App.css'
 import { useState } from 'react';
 import HabitList, { Habit } from './components/HabitList';
+import { Heading } from '@chakra-ui/react';
 import TopBar from './components/TopBar';
 
 function App() {
@@ -29,7 +30,8 @@ function App() {
     }
 
     return (<>
-        <TopBar username={user}/>
+        <TopBar username={user} />
+        <Heading fontSize='5xl'>Habits</Heading>
         <HabitList habits={habits} onHabitFulfilled={onHabitFulfilled} onHabitFailed={onHabitFailed} deleteHabit={deleteHabit} />
     </>)
 }

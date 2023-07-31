@@ -1,0 +1,7 @@
+.icon-opacity {
+    opacity: 0.5;
+}
+
+.icon-opacity:hover {
+    opacity: 0.75;
+}
