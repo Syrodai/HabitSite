@@ -17,7 +17,7 @@ const TopBar = ({ username }: Props) => {
     }
 
     const date = new Date();
-    console.log(date.getTimezoneOffset());
+    //console.log(date.getTimezoneOffset());
 
     return (
         <HStack justifyContent='space-between'>

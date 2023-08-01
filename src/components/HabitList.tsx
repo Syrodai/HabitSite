@@ -15,12 +15,11 @@ interface Props {
     onHabitFulfilled: (habit: Habit) => void;
     onHabitFailed: (habit: Habit) => void;
     deleteHabit: (habit: Habit) => void;
+    createHabit: (description: string) => void;
 }
 
-const HabitList = ({ habits, onHabitFulfilled, onHabitFailed, deleteHabit }: Props) => {
+const HabitList = ({ habits, onHabitFulfilled, onHabitFailed, deleteHabit, createHabit }: Props) => {
     const [hovered, setHovered] = useState<Habit | null>(null);
-
-    
 
     return (
         <div>
@@ -36,7 +35,7 @@ const HabitList = ({ habits, onHabitFulfilled, onHabitFailed, deleteHabit }: Pro
                     </ListItem>
                 )}
             </List>
-            <CreateHabit />
+            <CreateHabit onCreateHabit={createHabit}/>
         </div>
     )
 }

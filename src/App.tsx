@@ -28,11 +28,19 @@ function App() {
     const deleteHabit = (habit: Habit) => {
         setHabits(habits.filter((h) => habit.id !== h.id));
     }
+    const createHabit = (desc: string) => {
+        // random id for now. Will be assigned by the backend later.
+        setHabits([...habits, {
+            id: Math.floor(Math.random() * 1000000) + 1,
+            description: desc,
+            status: "",
+        }]);
+    }
 
     return (<>
         <TopBar username={user} />
-        <Heading fontSize='5xl'>Habits</Heading>
-        <HabitList habits={habits} onHabitFulfilled={onHabitFulfilled} onHabitFailed={onHabitFailed} deleteHabit={deleteHabit} />
+        <Heading fontSize='5xl'>Daily Habits</Heading>
+        <HabitList habits={habits} onHabitFulfilled={onHabitFulfilled} onHabitFailed={onHabitFailed} deleteHabit={deleteHabit} createHabit={createHabit} />
     </>)
 }
 
