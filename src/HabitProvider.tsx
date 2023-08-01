@@ -11,7 +11,7 @@ interface HabitContextType {
     setHabits: (habit: Habit[]) => void;
     fulfillHabit: (habit: Habit) => void;
     failHabit: (habit: Habit) => void;
-    deleteHabit: (habit: Habit) => void;
+    deleteHabit: (habit: Habit, askConfirmation?: boolean) => void;
     createHabit: (desc: string) => void;
     editHabit: (habit: Habit, newHabit: Habit) => void;
 }
@@ -37,8 +37,13 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
         console.log(`Habit '${habit.description}' marked as failed`);
         editHabit(habit, { ...habit, status: "FAILED" })
     }
-    const deleteHabit = (habit: Habit) => {
-        setHabits(habits.filter((h) => habit.id !== h.id));
+    const deleteHabit = (habit: Habit, askConfirmation: boolean=false) => {
+        const confirmationText = "Are you sure you want to delete '" + habit.description + "'?\n Your streak and history for this habit will be lost."
+        if (askConfirmation && !window.confirm(confirmationText)) {
+            return;
+        } else {
+            setHabits(habits.filter((h) => habit.id !== h.id));
+        }
     }
     const createHabit = (desc: string) => {
         // random id for now. Will be assigned by the backend later.

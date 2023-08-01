@@ -14,7 +14,7 @@ const QuickEditMenu = ({ habit, onEditClick }: Props) => {
 
     return (
         <HStack>
-            <DeleteIcon className="icon-opacity" onClick={() => deleteHabit(habit)} />
+            <DeleteIcon className="icon-opacity" onClick={() => deleteHabit(habit, true)} />
             <EditIcon className="icon-opacity" onClick={() => onEditClick(habit)} />
         </HStack>
     )
