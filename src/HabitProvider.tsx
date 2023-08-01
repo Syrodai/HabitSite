@@ -58,9 +58,9 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
             failHabit,
             deleteHabit,
             createHabit,
+            editHabit,
             habits,
             setHabits,
-            editHabit,
         }}>
             {children}
         </HabitContext.Provider>

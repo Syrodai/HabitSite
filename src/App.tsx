@@ -11,7 +11,7 @@ function App() {
 
     return (<>
         <TopBar username={user} />
-        <Heading fontSize='5xl'>Daily Habits</Heading>
+        <Heading fontSize='5xl' marginBottom={5} marginTop={4}>Daily Habits</Heading>
         <HabitList />
     </>)
 }
