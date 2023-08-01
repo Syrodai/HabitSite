@@ -5,7 +5,7 @@ import "../App.css";
 
 interface Props {
     habit: Habit;
-    onClickEdit: () => void;
+    onClickEdit: (habit: Habit) => void;
     onClickDelete: (habit: Habit) => void;
 }
 
