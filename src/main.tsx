@@ -3,12 +3,14 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import { ChakraProvider } from '@chakra-ui/react'
+import HabitProvider from './HabitProvider'
 
-const rootElement = document.getElementById('root')
-ReactDOM.createRoot(rootElement).render(
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
         <ChakraProvider>
-            <App />
+            <HabitProvider>
+                <App />
+            </HabitProvider>
         </ChakraProvider>
     </React.StrictMode>,
 )

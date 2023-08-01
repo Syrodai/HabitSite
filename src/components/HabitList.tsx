@@ -1,41 +1,28 @@
-import { Button, List, ListItem, HStack, Text, Box, Input } from "@chakra-ui/react";
-import { useState } from "react";
+import { Button, List, ListItem, HStack, Text, Box } from "@chakra-ui/react";
+import { useState, useContext } from "react";
 import QuickEditMenu from "./QuickEditMenu";
-import CreateHabit from "./CreateHabit";
-//import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
+import HabitCreator from "./HabitCreator";
+import  { Habit, HabitContext } from "../HabitProvider";
 
-export interface Habit {
-    id: number;
-    description: string;
-    status: string;
-}
-
-interface Props {
-    habits: Habit[];
-    onHabitFulfilled: (habit: Habit) => void;
-    onHabitFailed: (habit: Habit) => void;
-    deleteHabit: (habit: Habit) => void;
-    createHabit: (description: string) => void;
-}
-
-const HabitList = ({ habits, onHabitFulfilled, onHabitFailed, deleteHabit, createHabit }: Props) => {
+const HabitList = () => {
     const [hovered, setHovered] = useState<Habit | null>(null);
+    const { habits, fulfillHabit, failHabit } = useContext(HabitContext)!;
 
     return (
         <div>
             <List>
-                {habits.map((habit) =>
+                {habits.map((habit: Habit) =>
                     <ListItem key={habit.id} onMouseOver={() => setHovered(habit)} onMouseOut={() => { if (hovered === habit) setHovered(null) }}>
                         <HStack>
-                            <Box width={10}>{hovered === habit && <QuickEditMenu habit={habit} onClickDelete={deleteHabit} />}</Box>
+                            <Box width={10}>{hovered === habit && <QuickEditMenu habit={habit} />}</Box>
                             <Text width={300} >{habit.description}</Text>
-                            <Button colorScheme="green" variant={habit.status==="DONE" ? "solid": "outline"} size='lg' onClick={() => onHabitFulfilled(habit)}>Done!</Button>
-                            <Button colorScheme="red" variant={habit.status === "FAILED" ? "solid" : "outline"} size='sm' onClick={() => onHabitFailed(habit)}>Missed</Button>
+                            <Button colorScheme="green" variant={habit.status==="DONE" ? "solid": "outline"} size='lg' onClick={() => fulfillHabit(habit)}>Done!</Button>
+                            <Button colorScheme="red" variant={habit.status === "FAILED" ? "solid" : "outline"} size='sm' onClick={() => failHabit(habit)}>Missed</Button>
                         </HStack>
                     </ListItem>
                 )}
             </List>
-            <CreateHabit onCreateHabit={createHabit}/>
+            <HabitCreator />
         </div>
     )
 }

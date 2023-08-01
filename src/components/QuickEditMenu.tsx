@@ -1,19 +1,20 @@
 import { HStack } from "@chakra-ui/react";
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
-import { Habit } from './components/HabitList';
+import { useContext } from 'react';
+import { HabitContext, Habit } from "../HabitProvider";
 import "../App.css";
 
 interface Props {
     habit: Habit;
-    onClickEdit: (habit: Habit) => void;
-    onClickDelete: (habit: Habit) => void;
 }
 
-const QuickEditMenu = ({ onClickEdit, onClickDelete, habit }: Props) => {
+const QuickEditMenu = ({ habit }: Props) => {
+    const { deleteHabit } = useContext(HabitContext)!;
+
     return (
         <HStack>
-            <DeleteIcon className="icon-opacity" onClick={() => onClickDelete(habit)} />
-            <EditIcon className="icon-opacity" onClick={onClickEdit} />
+            <DeleteIcon className="icon-opacity" onClick={() => deleteHabit(habit)} />
+            <EditIcon className="icon-opacity" onClick={() => deleteHabit(habit)} />
         </HStack>
     )
 }

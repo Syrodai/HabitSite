@@ -1,16 +1,15 @@
 import { Button, HStack, Input } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useContext } from 'react';
 import '../App.css';
+import { HabitContext } from '../HabitProvider';
 
-interface Props {
-    onCreateHabit: (description: string) => void;
-}
 
-const CreateHabit = ({ onCreateHabit}: Props) => {
+const HabitCreator = () => {
     const [creatingHabit, setCreatingHabit] = useState(false);
     const [habitDescription, setHabitDescription] = useState("");
-    const inputRef = useRef(null);
+    const inputRef = useRef<HTMLInputElement>(null);
+    const { createHabit } = useContext(HabitContext)!;
 
     // auto focus input
     useEffect(() => inputRef?.current?.focus(), [creatingHabit]);
@@ -21,7 +20,7 @@ const CreateHabit = ({ onCreateHabit}: Props) => {
         !creatingHabit ?
             <Button colorScheme="blue" variant="solid" size='sm' marginLeft={10} onClick={() => { setCreatingHabit(true); setHabitDescription("")}}>Create Habit</Button>
             :
-            <form onSubmit={(event) => { event.preventDefault(); setCreatingHabit(false); onCreateHabit(habitDescription) }}>
+            <form onSubmit={(event) => { event.preventDefault(); setCreatingHabit(false); createHabit(habitDescription) }}>
                 <HStack marginLeft={10} marginBottom={2}>
                     <Input ref={inputRef} width="50%" placeholder={placeholder} onChange={(event) => setHabitDescription(event.target.value)} />
                     <CloseIcon className="icon-opacity" onClick={() => setCreatingHabit(false)} />
@@ -32,4 +31,4 @@ const CreateHabit = ({ onCreateHabit}: Props) => {
 }
 
 //
-export default CreateHabit;
+export default HabitCreator;
