@@ -1,9 +1,11 @@
 import { useState, createContext, ReactNode } from 'react';
 
+export enum HabitStatus { PENDING = 1, DONE = 2, FAILED = 3 }; // should not be changed once data becomes permanently stored
+
 export interface Habit {
     id: number;
     description: string;
-    status: string;
+    status: HabitStatus;
 }
 
 interface HabitContextType {
@@ -20,22 +22,22 @@ export const HabitContext = createContext<HabitContextType | null>(null);
 
 const HabitProvider = ({ children }: { children: ReactNode }) => {
     const [habits, setHabits] = useState([
-        { id: 1, description: "Be good", status: "" },
-        { id: 2, description: "Exercise", status: "DONE" },
-        { id: 3, description: "Habit #3", status: "FAILED" },
+        { id: 1, description: "Be good", status: HabitStatus.PENDING },
+        { id: 2, description: "Exercise", status: HabitStatus.DONE },
+        { id: 3, description: "Habit #3", status: HabitStatus.FAILED },
     ]);
     // habit start date
     // calendar status history array
 
     const fulfillHabit = (habit: Habit) => {
-        if (habit.status === "DONE") return;
+        if (habit.status === HabitStatus.DONE) return;
         console.log(`Habit '${habit.description}' marked as fulfilled`);
-        editHabit(habit, { ...habit, status: "DONE" })
+        editHabit(habit, { ...habit, status: HabitStatus.DONE })
     }
     const failHabit = (habit: Habit) => {
-        if (habit.status === "FAILED") return;
+        if (habit.status === HabitStatus.FAILED) return;
         console.log(`Habit '${habit.description}' marked as failed`);
-        editHabit(habit, { ...habit, status: "FAILED" })
+        editHabit(habit, { ...habit, status: HabitStatus.FAILED })
     }
     const deleteHabit = (habit: Habit, askConfirmation: boolean=false) => {
         const confirmationText = "Are you sure you want to delete '" + habit.description + "'?\n Your streak and history for this habit will be lost."
@@ -50,7 +52,7 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
         setHabits([...habits, {
             id: Math.floor(Math.random() * 1000000) + 1,
             description: desc,
-            status: "",
+            status: HabitStatus.PENDING,
         }]);
     }
     const editHabit = (habit: Habit, newHabit: Habit) => {

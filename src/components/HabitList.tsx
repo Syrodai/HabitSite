@@ -2,7 +2,7 @@ import { Button, List, ListItem, HStack, Text, Box, Input, InputGroup, InputRigh
 import { useState, useContext, useEffect, useRef } from "react";
 import QuickEditMenu from "./QuickEditMenu";
 import HabitCreator from "./HabitCreator";
-import  { Habit, HabitContext } from "../HabitProvider";
+import { Habit, HabitContext, HabitStatus } from "../HabitProvider";
 
 const HabitList = () => {
     const [hovered, setHovered] = useState<Habit | null>(null);
@@ -19,7 +19,7 @@ const HabitList = () => {
             <List>
                 {habits.map((habit: Habit) =>
                     <ListItem key={habit.id} onMouseOver={() => setHovered(habit)} onMouseOut={() => { if (hovered === habit) setHovered(null) }}>
-                        <HStack>
+                        <HStack padding={1}>
                             <Box width={12}>{hovered === habit && <QuickEditMenu habit={habit} onEditClick={(habit: Habit) => {setEditing(habit); setNewDescription(habit.description)}}/>}</Box>
                             {editing === habit ?
                                 <form onSubmit={(event) => { event.preventDefault(); editHabit(habit, { ...habit, description: newDescription }) }}>
@@ -32,8 +32,8 @@ const HabitList = () => {
                                 </form>
                             :
                                 <Text width={300} >{habit.description}</Text>}
-                            <Button colorScheme="green" variant={habit.status==="DONE" ? "solid": "outline"} size='lg' onClick={() => fulfillHabit(habit)}>Done!</Button>
-                            <Button colorScheme="red" variant={habit.status === "FAILED" ? "solid" : "outline"} size='sm' onClick={() => failHabit(habit)}>Missed</Button>
+                            <Button colorScheme="green" variant={habit.status===HabitStatus.DONE ? "solid": "outline"} size='lg' onClick={() => fulfillHabit(habit)}>Done!</Button>
+                            <Button colorScheme="red" variant={habit.status===HabitStatus.FAILED ? "solid" : "outline"} size='sm' onClick={() => failHabit(habit)}>Missed</Button>
                         </HStack>
                     </ListItem>
                 )}
