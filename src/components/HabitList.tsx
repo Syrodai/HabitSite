@@ -3,12 +3,13 @@ import { useState, useContext, useEffect, useRef } from "react";
 import QuickEditMenu from "./QuickEditMenu";
 import HabitCreator from "./HabitCreator";
 import { Habit, HabitContext, HabitStatus } from "../HabitProvider";
+import { today } from "../date";
 
 const HabitList = () => {
     const [hovered, setHovered] = useState<Habit | null>(null);
     const [editing, setEditing] = useState<Habit | null>(null);
     const [newDescription, setNewDescription] = useState("");
-    const { habits, fulfillHabit, failHabit, editHabit } = useContext(HabitContext)!;
+    const { habits, fulfillHabit, failHabit, editHabit, getStatus } = useContext(HabitContext)!;
 
     // auto focus input
     const inputRef = useRef<HTMLInputElement>(null);
@@ -32,8 +33,8 @@ const HabitList = () => {
                                 </form>
                             :
                                 <Text width={300} >{habit.description}</Text>}
-                            <Button colorScheme="green" variant={habit.status===HabitStatus.DONE ? "solid": "outline"} size='lg' onClick={() => fulfillHabit(habit)}>Done!</Button>
-                            <Button colorScheme="red" variant={habit.status===HabitStatus.FAILED ? "solid" : "outline"} size='sm' onClick={() => failHabit(habit)}>Missed</Button>
+                            <Button colorScheme="green" variant={getStatus(habit, today().date) === HabitStatus.DONE ? "solid" : "outline"} size='lg' onClick={() => fulfillHabit(habit, today().date)}>Done!</Button>
+                            <Button colorScheme="red" variant={getStatus(habit, today().date) === HabitStatus.FAILED ? "solid" : "outline"} size='sm' onClick={() => failHabit(habit, today().date)}>Missed</Button>
                         </HStack>
                     </ListItem>
                 )}
@@ -42,16 +43,5 @@ const HabitList = () => {
         </div>
     )
 }
-/*
-!creatingHabit ?
-    <Button colorScheme="blue" variant="solid" size='sm' marginLeft={10} onClick={() => { setCreatingHabit(true); setHabitDescription("") }}>Create Habit</Button>
-    :
-    <form onSubmit={(event) => { event.preventDefault(); setCreatingHabit(false); createHabit(habitDescription) }}>
-        <HStack marginLeft={10} marginBottom={2}>
-            <Input ref={inputRef} width="50%" placeholder={placeholder} onChange={(event) => setHabitDescription(event.target.value)} />
-            <CloseIcon className="icon-opacity" onClick={() => setCreatingHabit(false)} />
-        </HStack>
-        <Button isDisabled={habitDescription === ""} colorScheme="blue" variant="solid" size='sm' marginLeft={10} type="submit">Submit</Button>
-    </form>
-*/
+
 export default HabitList;

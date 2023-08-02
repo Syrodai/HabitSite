@@ -5,6 +5,7 @@ import { Heading } from '@chakra-ui/react';
 import TopBar from './components/TopBar';
 
 function App() {
+    
 
     //const [user, setUser] = useState("Sample User");
     const user = "Sample User";
