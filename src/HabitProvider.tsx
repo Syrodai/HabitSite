@@ -29,11 +29,11 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
     const [habits, setHabits] = useState([
         {
             id: 1, description: "Exercise", startDate: getDay(-5).date,
-            history: [HabitStatus.PENDING, HabitStatus.DONE, HabitStatus.DONE, HabitStatus.DONE, HabitStatus.FAILED, HabitStatus.DONE]
+            history: [HabitStatus.DONE, HabitStatus.FAILED, HabitStatus.DONE, HabitStatus.DONE, HabitStatus.DONE, HabitStatus.PENDING]
         },
         {
             id: 2, description: "Habit #2", startDate: getDay(-1).date,
-            history: [HabitStatus.PENDING, HabitStatus.FAILED]
+            history: [HabitStatus.FAILED, HabitStatus.PENDING]
         },
         {
             id: 3, description: "Be good", startDate: today().date,

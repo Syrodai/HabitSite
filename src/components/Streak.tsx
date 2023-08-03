@@ -7,16 +7,25 @@ interface Props {
 }
 
 const Streak = ({ habit }: Props) => {
-    let streak = 0;
+    const todayIndex = daysSince(habit.startDate, today().date);
+    const extendedToday = habit.history[todayIndex] === HabitStatus.DONE;
 
-    for (let i = daysSince(habit.startDate, today().date); i >= 0; i--) {
-        if (habit.history[i] !== HabitStatus.DONE)
+    let streak = 0;
+    let run = 0;
+
+    for (let i = todayIndex; i >= 0; i--) {
+        if (habit.history[i] === HabitStatus.DONE) {
+            run++;
+            if (run > streak) streak = run;
+        } else if (habit.history[i] === HabitStatus.PENDING) {
+            run = 0;
+        } else {
             break;
-        streak++;
+        }
     }
 
     return (
-        <Badge fontSize='14px' paddingX={2} borderRadius='2px' colorScheme={streak>0 ? 'yellow' : 'gray'} >{streak}</Badge>
+        <Badge fontSize='14px' paddingX={2} borderRadius='2px' colorScheme={streak == 0 ? 'gray' : extendedToday ? 'green' : 'yellow' } >{streak}</Badge>
     )
 }
 
