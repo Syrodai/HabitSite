@@ -18,14 +18,14 @@ const HabitCreator = () => {
 
     return (<>{
         !creatingHabit ?
-            <Button colorScheme="blue" variant="solid" size='sm' marginLeft={10} onClick={() => { setCreatingHabit(true); setHabitDescription("")}}>Create Habit</Button>
+            <Button colorScheme="blue" variant="solid" size='sm' onClick={() => { setCreatingHabit(true); setHabitDescription("")}}>Create Habit</Button>
             :
             <form onSubmit={(event) => { event.preventDefault(); setCreatingHabit(false); createHabit(habitDescription) }}>
-                <HStack marginLeft={10} marginBottom={2}>
+                <HStack marginBottom={2}>
                     <Input ref={inputRef} width="50%" placeholder={placeholder} onChange={(event) => setHabitDescription(event.target.value)} />
                     <CloseIcon className="icon-opacity" onClick={() => setCreatingHabit(false)} />
                 </HStack>
-                <Button isDisabled={habitDescription === ""} colorScheme="blue" variant="solid" size='sm' marginLeft={10} type="submit">Submit</Button>
+                <Button isDisabled={habitDescription === ""} colorScheme="blue" variant="solid" size='sm' type="submit">Submit</Button>
             </form>
     }</>)
 }

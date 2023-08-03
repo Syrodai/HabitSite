@@ -18,11 +18,11 @@ const FulfillButtons = ({ bigButton, habit, date }: Props) => {
 
     return (
         <HStack spacing={2}>
-            <Button colorScheme="green" variant={getStatus(habit, date) === HabitStatus.DONE ? "solid" : "outline"} size={bigButton ? 'lg' : 'sm'} onClick={() => fulfillHabit(habit, date)}>
-                {bigButton ? <Text>Done!</Text> : <CheckIcon />}
-            </Button>
             <Button colorScheme="red" variant={getStatus(habit, date) === HabitStatus.FAILED ? "solid" : "outline"} size='sm' onClick={() => failHabit(habit, date)} >
                 {bigButton ? <Text>Missed</Text> : <CloseIcon />}
+            </Button>
+            <Button colorScheme="green" variant={getStatus(habit, date) === HabitStatus.DONE ? "solid" : "outline"} size={bigButton ? 'lg' : 'sm'} onClick={() => fulfillHabit(habit, date)}>
+                {bigButton ? <Text>Done!</Text> : <CheckIcon />}
             </Button>
         </HStack>
     )

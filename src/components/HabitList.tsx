@@ -1,4 +1,4 @@
-import { Button, List, ListItem, HStack, Text, Box, Input, InputGroup, InputRightElement} from "@chakra-ui/react";
+import { Button, List, ListItem, HStack, Text, Box, Input, InputGroup, InputRightElement, VStack, Center} from "@chakra-ui/react";
 import { useState, useContext, useEffect, useRef } from "react";
 import QuickEditMenu from "./QuickEditMenu";
 import HabitCreator from "./HabitCreator";
@@ -16,34 +16,48 @@ const HabitList = () => {
     // auto focus input
     const inputRef = useRef<HTMLInputElement>(null);
     useEffect(() => inputRef?.current?.focus(), [editing]);
-    
+
+    // spacing should be changed to be less repetitive
     return (
         <div>
+            <HStack>
+                <Text as='b' width={100}>{getDay(-2).dayOfWeek}</Text>
+                <VStack spacing={0} width={100}>
+                    <Text fontSize='20px' as='b'>Yesterday</Text>
+                    <Text>({yesterday().dayOfWeek})</Text>
+                </VStack>
+                <VStack spacing={0} width={180}>
+                    <Text fontSize='20px' as='b'>Today</Text>
+                    <Text>({today().dayOfWeek})</Text>
+                </VStack>
+                <Text fontSize='20px' as='b' width={300}>Habit</Text>
+            </HStack>
             <List>
                 {habits.map((habit: Habit) =>
                     <ListItem key={habit.id} onMouseOver={() => setHovered(habit)} onMouseOut={() => { if (hovered === habit) setHovered(null) }}>
                         <HStack padding={1}>
-                            <Box width={12}>{hovered === habit && <QuickEditMenu habit={habit} onEditClick={(habit: Habit) => { setEditing(habit); setNewDescription(habit.description) }} />}</Box>
-                            <Streak habit={habit} />
-                            {editing === habit ?
+                            <Box width={100}><FulfillButtons habit={habit} date={getDay(-2).date} bigButton={false} /></Box>
+                            <Box width={100}><FulfillButtons habit={habit} date={yesterday().date} bigButton={false} /></Box>
+                            <Box width={180}><FulfillButtons habit={habit} date={today().date} bigButton={true} /></Box>
+                            <Box width={300}>{editing === habit ?
                                 <form onSubmit={(event) => { event.preventDefault(); editHabit(habit, { ...habit, description: newDescription }) }}>
                                     <InputGroup>
-                                        <Input width={300} ref={inputRef} defaultValue={habit.description} onChange={(event) => setNewDescription(event.target.value)} />
+                                        <Input ref={inputRef} defaultValue={habit.description} onChange={(event) => setNewDescription(event.target.value)} />
                                         <InputRightElement>
-                                            <Button colorScheme='blue' isDisabled={newDescription===""} type="submit">Save</Button>
+                                            <Button colorScheme='blue' isDisabled={newDescription === ""} type="submit">Save</Button>
                                         </InputRightElement>
                                     </InputGroup>
                                 </form>
-                            :
-                                <Text width={300} >{habit.description}</Text>}
-                            <Box mr={10}><FulfillButtons habit={habit} date={today().date} bigButton={true} /></Box>
-                            <Box mr={10}><FulfillButtons habit={habit} date={yesterday().date} bigButton={false} /></Box>
-                            <Box mr={10}><FulfillButtons habit={habit} date={getDay(-2).date} bigButton={false} /></Box>
+                                :
+                                <Text >{habit.description}</Text>
+                            }</Box>
+                            <Streak habit={habit} />
+                            <Box width={12}>{hovered === habit && <QuickEditMenu habit={habit} onEditClick={(habit: Habit) => { setEditing(habit); setNewDescription(habit.description) }} />}</Box>
                         </HStack>
                     </ListItem>
                 )}
             </List>
-            <HabitCreator />
+            <Box width={625} ml={400}><HabitCreator /></Box>
         </div>
     )
 }
