@@ -6,7 +6,7 @@ import { daysSince } from '../date';
 
 
 
-interface Props {CheckIcon
+interface Props {
     bigButton: boolean,
     habit: Habit,
     date: string,

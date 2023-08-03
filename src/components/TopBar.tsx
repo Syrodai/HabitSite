@@ -21,8 +21,8 @@ const TopBar = ({ username }: Props) => {
 
     return (
         <HStack justifyContent='space-between'>
-            <Text color="orange">{username}</Text>
             <Text>{date.toLocaleDateString('en-US', dateFormat)}</Text>
+            <Text color="orange">{username}</Text>
         </HStack>
     )
 }
