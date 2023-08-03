@@ -18,7 +18,7 @@ interface HabitContextType {
     deleteHabit: (habit: Habit, askConfirmation?: boolean) => void;
     createHabit: (desc: string) => void;
     editHabit: (habit: Habit, newHabit: Habit) => void;
-    getStatus: (habit: Habit, newHabit: Habit) => HabitStatus;
+    getStatus: (habit: Habit, date: string) => HabitStatus;
 }
 
 export const HabitContext = createContext<HabitContextType | null>(null);

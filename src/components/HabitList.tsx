@@ -3,7 +3,8 @@ import { useState, useContext, useEffect, useRef } from "react";
 import QuickEditMenu from "./QuickEditMenu";
 import HabitCreator from "./HabitCreator";
 import { Habit, HabitContext, HabitStatus } from "../HabitProvider";
-import { today } from "../date";
+import { getDay, today, yesterday } from "../date";
+import FulfillButtons from "./FulfillButtons";
 
 const HabitList = () => {
     const [hovered, setHovered] = useState<Habit | null>(null);
@@ -33,8 +34,9 @@ const HabitList = () => {
                                 </form>
                             :
                                 <Text width={300} >{habit.description}</Text>}
-                            <Button colorScheme="green" variant={getStatus(habit, today().date) === HabitStatus.DONE ? "solid" : "outline"} size='lg' onClick={() => fulfillHabit(habit, today().date)}>Done!</Button>
-                            <Button colorScheme="red" variant={getStatus(habit, today().date) === HabitStatus.FAILED ? "solid" : "outline"} size='sm' onClick={() => failHabit(habit, today().date)}>Missed</Button>
+                            <Box mr={10}><FulfillButtons habit={habit} date={today().date} bigButton={true} /></Box>
+                            <Box mr={10}><FulfillButtons habit={habit} date={yesterday().date} bigButton={false} /></Box>
+                            <Box mr={10}><FulfillButtons habit={habit} date={getDay(-2).date} bigButton={false} /></Box>
                         </HStack>
                     </ListItem>
                 )}
