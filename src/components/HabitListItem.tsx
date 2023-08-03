@@ -23,7 +23,6 @@ const HabitListItem = ({ habit }: Props) => {
     useEffect(() => inputRef?.current?.focus(), [editing]);
 
     const onSubmit = (event) => {
-        console.log('yo');
         event.preventDefault();
         editHabit(habit, { ...habit, description: newDescription })
         setEditing(false);
@@ -31,7 +30,7 @@ const HabitListItem = ({ habit }: Props) => {
 
     // spacing should be changed to be less repetitive
     return (
-        <ListItem key={habit.id} onMouseOver={() => setHovered(true)} onMouseOut={() => { if (hovered) setHovered(false) }}>
+        <ListItem key={habit.id} onMouseOver={() => setHovered(true)} onMouseOut={() => setHovered(false) }>
             <HStack padding={1}>
 
                 <Box width={100}><FulfillButtons habit={habit} date={getDay(-2).date} bigButton={false} isLocked={isLocked && getStatus(habit, getDay(-2).date) !== HabitStatus.PENDING} /></Box>
