@@ -1,4 +1,5 @@
 import { HStack, Text } from '@chakra-ui/react';
+import ColorModeSwitch from './ColorModeSwitch';
 
 interface Props {
     username: string,
@@ -22,7 +23,10 @@ const TopBar = ({ username }: Props) => {
     return (
         <HStack justifyContent='space-between'>
             <Text>{date.toLocaleDateString('en-US', dateFormat)}</Text>
-            <Text color="orange">{username}</Text>
+            <HStack>
+                <Text color="orange">{username}</Text>
+                <ColorModeSwitch />
+            </HStack>
         </HStack>
     )
 }

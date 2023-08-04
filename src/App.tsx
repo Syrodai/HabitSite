@@ -3,6 +3,7 @@
 import HabitList from './components/HabitList';
 import { Heading, Center } from '@chakra-ui/react';
 import TopBar from './components/TopBar';
+import Calendar from './components/Calendar';
 
 function App() {
     
@@ -14,6 +15,7 @@ function App() {
         <TopBar username={user} />
         <Heading fontSize='5xl' marginBottom={5} marginTop={4}>Daily Habits</Heading>
         <Center><HabitList /></Center>
+        <Calendar />
     </>)
 }
 

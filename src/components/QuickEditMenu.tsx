@@ -11,6 +11,8 @@ interface Props {
     setLocked: (locked: boolean) => void;
 }
 
+
+// need to behave differently if the user is using a touch device
 const QuickEditMenu = ({ habit, onEditClick, isLocked, setLocked }: Props) => {
     const { deleteHabit } = useContext(HabitContext)!;
     const [isMouseoverLockButton, setMouseOverLockButton] = useState(false);
