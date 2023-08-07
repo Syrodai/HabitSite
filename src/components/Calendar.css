@@ -47,17 +47,38 @@
 .grid-container {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    grid-gap: 0px;
+    border-collapse: collapse;
+}
+
+.grid-label {
+    border-top: 1px solid gray;
+    text-align: right;
 }
 
 .grid-item {
-    background-color: #f2f2f2;
-    padding: 2px;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+    z-index: 1;
 }
 
 .grid-run {
-    background-color: #0000FF;
+    position: relative;
+    background-color: #659fd1;
     color: #FFFFFF;
+    border-radius: 10px;
+    font-size: 12px;
+    border: hidden;
 }
+
+    .grid-run::before {
+        content: "";
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        border-right: 1px solid gray;
+        border-left: 1px solid gray;
+    }
 
 

@@ -15,12 +15,12 @@ export const getDay = (offset: number) => {
     const time = new Date(new Date().setDate(new Date().getDate() + offset))
     const year = time.toLocaleDateString(undefined, { year: 'numeric' });
     const month = time.toLocaleDateString(undefined, { month: '2-digit' });
-    const day = time.toLocaleDateString(undefined, { day: '2-digit' });
+    const dayOfMonth = time.toLocaleDateString(undefined, { day: '2-digit' });
 
-    const date = year + '-' + month + '-' + day;
+    const date = year + '-' + month + '-' + dayOfMonth;
     const dayOfWeek = time.toLocaleDateString(undefined, { weekday: 'long' });
 
-    return { date, dayOfWeek };
+    return { date, dayOfWeek, dayOfMonth, year, month };
 }
 
 export const getRelativeDay = (offset: number, relativeTo: string) => {
@@ -28,12 +28,12 @@ export const getRelativeDay = (offset: number, relativeTo: string) => {
     const time = new Date(relativeDate.setDate(relativeDate.getDate() + offset));
     const year = time.toLocaleDateString(undefined, { year: 'numeric' });
     const month = time.toLocaleDateString(undefined, { month: '2-digit' });
-    const day = time.toLocaleDateString(undefined, { day: '2-digit' });
+    const dayOfMonth = time.toLocaleDateString(undefined, { day: '2-digit' });
 
-    const date = year + '-' + month + '-' + day;
+    const date = year + '-' + month + '-' + dayOfMonth;
     const dayOfWeek = time.toLocaleDateString(undefined, { weekday: 'long' });
 
-    return { date, dayOfWeek };
+    return { date, dayOfWeek, dayOfMonth, year, month };
 }
 
 export const toDate = (date: string) => {

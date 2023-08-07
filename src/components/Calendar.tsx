@@ -6,7 +6,6 @@ import moment from 'moment';
 import {  Habit, HabitContext, HabitStatus } from '../HabitProvider';
 import { useContext } from 'react';
 import { getRelativeDay, toDate } from '../date';
-import { Table, Tr, Td, Thead , Tbody } from '@chakra-ui/react';
 import "./Calendar.css";
 
 interface Event {
@@ -15,10 +14,35 @@ interface Event {
     end: Date;
 }
 
+// helper function that turns an index of a calendar month into the correct day of month
+const calendarIndexToDate = (index: number, startDate: number, daysInMonth1: number, daysInMonth2: number) => {
+    index = index + startDate;
+    index = index - daysInMonth2 * Math.floor(index / (daysInMonth2 + daysInMonth1 + 1));
+    index = index - daysInMonth1 * Math.floor(index / (daysInMonth1 + 1));
+    return index;
+}
+
+const getCalendarInfo = (month: number, year: number, startOnSunday: boolean) => {
+    const dowIndex = (new Date(year, month - 1, 1).getDay() - (startOnSunday ? 0 : 1)) % 7;
+    const start = getRelativeDay(-dowIndex, year.toString() + "-" + month.toString().padStart(2, '0') + "-" + "01");
+    const startOfCalendarMonth = start.date;
+    const startDate = parseInt(start.dayOfMonth)
+    return { startOfCalendarMonth, startDate };
+}
+
 // needs to be made dark mode compatible
 const Calendar = () => {
     const localizer = momentLocalizer(moment);
     const { habits, getStatus } = useContext(HabitContext)!;
+
+    // probably should become useState
+    const displayedMonth = new Date().getMonth()+1;
+    const displayedYear = new Date().getFullYear();
+    const weekStartsOnSunday = true;
+
+    const { startOfCalendarMonth, startDate } = getCalendarInfo(displayedMonth, displayedYear, weekStartsOnSunday);
+    const daysInMonth1 = new Date(displayedYear, displayedMonth + (startDate===1 ? 0 : -1), 0).getDate();
+    const daysInMonth2 = new Date(displayedYear, displayedMonth + (startDate===1 ? 1 : 0), 0).getDate();
 
     // generate runs
     const generateCalendarRuns = (calendarStartDate: string, habit: Habit, numWeeks: number = 5) => {
@@ -88,10 +112,25 @@ const Calendar = () => {
     const weeks = [1, 2, 3, 4, 5];
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+    //const startOfCalendarMonth = "2023-07-30";
+
     const habitRuns = habits.map((habit) =>
-        generateCalendarRuns("2023-07-30", habit, 5)
+        generateCalendarRuns(startOfCalendarMonth, habit, 5)
     );
-    
+
+    // todo
+    // add day labels
+    // add month and year label
+    // add toggle between sun/mon start of week
+    // browse between months, storing the day that is the calendar start and the number of calendar weeks
+    // add toggle to show/hide calendar
+    // change background for days out of month
+    // change background for current day
+    // text truncating
+    // improve performance
+    // need to fix div keys to be unique
+
+    let index = 0; // should change this so that it is a map
     return (<>
         <BigCalendar
             localizer={localizer}
@@ -109,16 +148,12 @@ const Calendar = () => {
 
         <div className="grid-container">
         {weeks.map((_, week) => <>
-            <div className="grid-item" align="right">12</div>
-            <div className="grid-item" align="right">12</div>
-            <div className="grid-item" align="right">12</div>
-            <div className="grid-item" align="right">12</div>
-            <div className="grid-item" align="right">12</div>
-            <div className="grid-item" align="right">12</div>
-            <div className="grid-item" align="right">12</div>
-            {habitRuns.map((h) =>
+            {days.map((_, day) => <>
+                <div key={`label${index}`} className="grid-item grid-label">{calendarIndexToDate(index++, startDate, daysInMonth1, daysInMonth2)/*getRelativeDay(week * 7 + day, startOfCalendarMonth).dayOfMonth*/}</div>
+            </>)}
+            {habitRuns.map((h, i) =>
                 h[week].map((span) =>
-                    span === 0 ? <div className="grid-item" /> : <div className="grid-item grid-run" style={{ gridColumn: `span ${span}` }}>desc</div>
+                    span === 0 ? <div key={`${habits[i].id}-${index}`} className="grid-item" /> : <div key={`${habits[i].id}-${index}`} className="grid-item grid-run" style={{ gridColumn: `span ${span}` }}>{habits[i].description}</div>
                 )
             )}
             
@@ -128,7 +163,3 @@ const Calendar = () => {
 }
 
 export default Calendar;
-
-function getStatus(habit: Habit, date: { date: string; dayOfWeek: string; }) {
-    throw new Error('Function not implemented.');
-}
