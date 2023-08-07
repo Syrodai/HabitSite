@@ -1,0 +1,63 @@
+.rbc-today {
+    background-color: #64BDFF;
+    opacity: 25%;
+}
+
+.rbc-off-range-bg {
+    background-color: #808080;
+    opacity: 25%;
+}
+
+.rbc-toolbar button {
+    color: var(--chakra-colors-primary);
+}
+
+.rbc-button-link {
+    cursor: default;
+}
+
+.rbc-event:focus {
+    outline: none;
+}
+
+.rbc-event {
+    background-color: #3174AD;
+    cursor: default;
+}
+
+.rbc-event-content {
+    font-size: 12px;
+}
+
+.td-date {
+    all: unset;
+    border: 1px solid;
+    text-align: right;
+}
+
+.tdsideborder {
+    all: unset;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-top: none;
+    border-bottom: none;
+}
+
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-gap: 0px;
+}
+
+.grid-item {
+    background-color: #f2f2f2;
+    padding: 2px;
+}
+
+.grid-run {
+    background-color: #0000FF;
+    color: #FFFFFF;
+}
+
+
