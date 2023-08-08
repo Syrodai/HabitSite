@@ -50,6 +50,11 @@
     border-collapse: collapse;
 }
 
+.grid-top-label {
+    border: 1px solid gray;
+    text-align: center;
+}
+
 .grid-label {
     border-top: 1px solid gray;
     text-align: right;
@@ -58,7 +63,10 @@
 .grid-item {
     border-left: 1px solid gray;
     border-right: 1px solid gray;
-    z-index: 1;
+}
+
+.grid-top-border {
+    border-top: 1px solid gray;
 }
 
 .grid-run {

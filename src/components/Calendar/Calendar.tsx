@@ -1,12 +1,14 @@
-//import { CSSReset } from '@chakra-ui/react'
 import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
 import "react-big-calendar/lib/css/react-big-calendar.css";
-
 import moment from 'moment';
-import {  Habit, HabitContext, HabitStatus } from '../HabitProvider';
-import { useContext } from 'react';
-import { getRelativeDay, toDate } from '../date';
+
+import {  Habit, HabitContext, HabitStatus } from '../../HabitProvider';
+import { useContext, useState } from 'react';
+import { HStack, Center } from '@chakra-ui/react';
+import { getRelativeDay, toDate } from '../../date';
+import CalendarNavButtons from './CalendarNavButtons';
 import "./Calendar.css";
+import CalendarLabel from './CalendarLabel';
 
 interface Event {
     title: string;
@@ -35,14 +37,32 @@ const Calendar = () => {
     const localizer = momentLocalizer(moment);
     const { habits, getStatus } = useContext(HabitContext)!;
 
-    // probably should become useState
-    const displayedMonth = new Date().getMonth()+1;
-    const displayedYear = new Date().getFullYear();
+    const now = new Date();
+    // merge into single useState to prevent double render
+    const [displayedMonth, setDisplayedMonth] = useState<number>(now.getMonth() + 1);
+    const [displayedYear, setDisplayedYear] = useState<number>(now.getFullYear());
     const weekStartsOnSunday = true;
 
     const { startOfCalendarMonth, startDate } = getCalendarInfo(displayedMonth, displayedYear, weekStartsOnSunday);
     const daysInMonth1 = new Date(displayedYear, displayedMonth + (startDate===1 ? 0 : -1), 0).getDate();
-    const daysInMonth2 = new Date(displayedYear, displayedMonth + (startDate===1 ? 1 : 0), 0).getDate();
+    const daysInMonth2 = new Date(displayedYear, displayedMonth + (startDate === 1 ? 1 : 0), 0).getDate();
+
+    // navigation button functions
+    const setToCurrent = () => {
+        const now = new Date();
+        setDisplayedMonth(now.getMonth() + 1);
+        setDisplayedYear(now.getFullYear())
+    }
+    const setToPrev = () => {
+        const prevMonth = new Date(displayedYear, displayedMonth-2, 1);
+        setDisplayedMonth(prevMonth.getMonth()+1);
+        setDisplayedYear(prevMonth.getFullYear());
+    }
+    const setToNext = () => {
+        const nextMonth = new Date(displayedYear, displayedMonth, 1);
+        setDisplayedMonth(nextMonth.getMonth()+1);
+        setDisplayedYear(nextMonth.getFullYear());
+    }
 
     // generate runs
     const generateCalendarRuns = (calendarStartDate: string, habit: Habit, numWeeks: number = 5) => {
@@ -119,7 +139,7 @@ const Calendar = () => {
     );
 
     // todo
-    // add day labels
+    // add localised day labels
     // add month and year label
     // add toggle between sun/mon start of week
     // browse between months, storing the day that is the calendar start and the number of calendar weeks
@@ -132,7 +152,34 @@ const Calendar = () => {
 
     let index = 0; // should change this so that it is a map
     return (<>
-        <BigCalendar
+        <HStack marginBottom={2} justify="space-between">
+            <CalendarNavButtons onClickToday={setToCurrent} onClickBack={setToPrev} onClickNext={setToNext} />
+            <CalendarLabel month={displayedMonth} year={displayedYear} />
+        </HStack>
+
+        <div className="grid-container">
+            {days.map((dayLabel, i) => <div key={dayLabel} className="grid-top-label">{days[(i + (weekStartsOnSunday ? 0 : 1)) % 7]}</div>)}
+            {weeks.map((_, week) => <>
+                {days.map((_, day) => <>
+                    <div key={`label-${day}-${week}`} className="grid-item grid-label">{calendarIndexToDate(index++, startDate, daysInMonth1, daysInMonth2)}</div>
+                </>)}
+                {habitRuns.map((h, i) =>
+                    h[week].map((span, j) =>
+                        span === 0 ? <div key={`${i}-${j}-${week}`} className="grid-item" /> : <div key={`${i}-${j}-${week}`} className="grid-item grid-run" style={{ gridColumn: `span ${span}` }}>{habits[i].description}</div>
+                    )
+                )}
+            </>)}
+            <div key="underline" className="grid-top-border" style={{ gridColumn: "span 7" }} />
+        </div>
+    </>)
+}
+
+export default Calendar;
+
+
+
+/*
+<BigCalendar
             localizer={localizer}
             events={habitHistory}
             views={['month']}
@@ -145,21 +192,4 @@ const Calendar = () => {
             onSelectEvent={() => null}
             popup={false}
         />
-
-        <div className="grid-container">
-        {weeks.map((_, week) => <>
-            {days.map((_, day) => <>
-                <div key={`label${index}`} className="grid-item grid-label">{calendarIndexToDate(index++, startDate, daysInMonth1, daysInMonth2)/*getRelativeDay(week * 7 + day, startOfCalendarMonth).dayOfMonth*/}</div>
-            </>)}
-            {habitRuns.map((h, i) =>
-                h[week].map((span) =>
-                    span === 0 ? <div key={`${habits[i].id}-${index}`} className="grid-item" /> : <div key={`${habits[i].id}-${index}`} className="grid-item grid-run" style={{ gridColumn: `span ${span}` }}>{habits[i].description}</div>
-                )
-            )}
-            
-        </>)}
-        </div>
-    </>)
-}
-
-export default Calendar;
+*/
