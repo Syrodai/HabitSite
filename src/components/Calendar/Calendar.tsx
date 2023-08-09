@@ -1,10 +1,10 @@
-import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
-import "react-big-calendar/lib/css/react-big-calendar.css";
-import moment from 'moment';
+//import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
+//import "react-big-calendar/lib/css/react-big-calendar.css";
+//import moment from 'moment';
 
 import {  Habit, HabitContext, HabitStatus } from '../../HabitProvider';
 import { useContext, useState } from 'react';
-import { HStack, Center } from '@chakra-ui/react';
+import { HStack } from '@chakra-ui/react';
 import { getRelativeDay, toDate } from '../../date';
 import CalendarNavButtons from './CalendarNavButtons';
 import "./Calendar.css";
@@ -34,7 +34,6 @@ const getCalendarInfo = (month: number, year: number, startOnSunday: boolean) =>
 
 // needs to be made dark mode compatible
 const Calendar = () => {
-    const localizer = momentLocalizer(moment);
     const { habits, getStatus } = useContext(HabitContext)!;
 
     const now = new Date();
@@ -64,7 +63,7 @@ const Calendar = () => {
         setDisplayedYear(nextMonth.getFullYear());
     }
 
-    // generate runs
+    // generate runs 
     const generateCalendarRuns = (calendarStartDate: string, habit: Habit, numWeeks: number = 5) => {
         let runPatterns = [];
 
@@ -92,50 +91,15 @@ const Calendar = () => {
         return runPatterns;
     }
 
+    const numWeeks = Math.ceil((startDate === 1 ? daysInMonth1 : daysInMonth1 - startDate + daysInMonth2) / 7);
+    const weeks = Array.from({ length: numWeeks }, (_, i) => i + 1);
 
-
-
-
-
-    let eventStartDate = null;
-    let habitHistory: Event[] = [];
-    for (let i = 0; i < habits.length; i++) {
-        const habit = habits[i];
-
-        let prev = HabitStatus.PENDING;
-        for (let day = 0; day < habit.history.length; day++) {
-            // if status is DONE and previous is not DONE, set start date as that day
-            // else if previous is DONE set end date to previous day and push
-            // set prev to status
-            let status = habit.history[day];
-            if (status === HabitStatus.DONE && prev !== HabitStatus.DONE) {
-                eventStartDate = toDate(getRelativeDay(day, habit.startDate).date);
-            } else if (status !== HabitStatus.DONE && prev === HabitStatus.DONE) {
-                habitHistory.push({
-                    title: habit.description,
-                    start: eventStartDate!,
-                    end: toDate(getRelativeDay(day - 1, habit.startDate).date)
-                })
-            }
-            prev = status;
-        }
-        // set end date to today and push
-        if (prev === HabitStatus.DONE) {
-            habitHistory.push({
-                title: habit.description,
-                start: eventStartDate!,
-                end: toDate(getRelativeDay(habit.history.length - 1, habit.startDate).date),
-            })
-        }
-    }
-
-    const weeks = [1, 2, 3, 4, 5];
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
     //const startOfCalendarMonth = "2023-07-30";
 
     const habitRuns = habits.map((habit) =>
-        generateCalendarRuns(startOfCalendarMonth, habit, 5)
+        generateCalendarRuns(startOfCalendarMonth, habit, numWeeks)
     );
 
     // todo
@@ -176,6 +140,39 @@ const Calendar = () => {
 
 export default Calendar;
 
+
+/*
+    let eventStartDate = null;
+    let habitHistory: Event[] = [];
+    for (let i = 0; i < habits.length; i++) {
+        const habit = habits[i];
+
+        let prev = HabitStatus.PENDING;
+        for (let day = 0; day < habit.history.length; day++) {
+            // if status is DONE and previous is not DONE, set start date as that day
+            // else if previous is DONE set end date to previous day and push
+            // set prev to status
+            let status = habit.history[day];
+            if (status === HabitStatus.DONE && prev !== HabitStatus.DONE) {
+                eventStartDate = toDate(getRelativeDay(day, habit.startDate).date);
+            } else if (status !== HabitStatus.DONE && prev === HabitStatus.DONE) {
+                habitHistory.push({
+                    title: habit.description,
+                    start: eventStartDate!,
+                    end: toDate(getRelativeDay(day - 1, habit.startDate).date)
+                })
+            }
+            prev = status;
+        }
+        // set end date to today and push
+        if (prev === HabitStatus.DONE) {
+            habitHistory.push({
+                title: habit.description,
+                start: eventStartDate!,
+                end: toDate(getRelativeDay(habit.history.length - 1, habit.startDate).date),
+            })
+        }
+    }*/
 
 
 /*
