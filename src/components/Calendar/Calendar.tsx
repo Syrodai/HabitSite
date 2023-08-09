@@ -5,7 +5,7 @@
 import {  Habit, HabitContext, HabitStatus } from '../../HabitProvider';
 import { useContext, useState } from 'react';
 import { HStack } from '@chakra-ui/react';
-import { getRelativeDay, toDate } from '../../date';
+import { daysSince, getRelativeDay } from '../../date';
 import CalendarNavButtons from './CalendarNavButtons';
 import "./Calendar.css";
 import CalendarLabel from './CalendarLabel';
@@ -34,45 +34,52 @@ const getCalendarInfo = (month: number, year: number, startOnSunday: boolean) =>
 
 // needs to be made dark mode compatible
 const Calendar = () => {
-    const { habits, getStatus } = useContext(HabitContext)!;
+    const { habits } = useContext(HabitContext)!;
 
     const now = new Date();
-    // merge into single useState to prevent double render
-    const [displayedMonth, setDisplayedMonth] = useState<number>(now.getMonth() + 1);
-    const [displayedYear, setDisplayedYear] = useState<number>(now.getFullYear());
+    // merged into single useState to prevent double render
+    const [displayed, setDisplayed] = useState({
+        month: now.getMonth() + 1,
+        year: now.getFullYear(),
+    });
     const weekStartsOnSunday = true;
 
-    const { startOfCalendarMonth, startDate } = getCalendarInfo(displayedMonth, displayedYear, weekStartsOnSunday);
-    const daysInMonth1 = new Date(displayedYear, displayedMonth + (startDate===1 ? 0 : -1), 0).getDate();
-    const daysInMonth2 = new Date(displayedYear, displayedMonth + (startDate === 1 ? 1 : 0), 0).getDate();
+    const { startOfCalendarMonth, startDate } = getCalendarInfo(displayed.month, displayed.year, weekStartsOnSunday);
+    const daysInMonth1 = new Date(displayed.year, displayed.month + (startDate===1 ? 0 : -1), 0).getDate();
+    const daysInMonth2 = new Date(displayed.year, displayed.month + (startDate === 1 ? 1 : 0), 0).getDate();
 
     // navigation button functions
     const setToCurrent = () => {
         const now = new Date();
-        setDisplayedMonth(now.getMonth() + 1);
-        setDisplayedYear(now.getFullYear())
+        setDisplayed({
+            month: now.getMonth() + 1,
+            year: now.getFullYear(),
+        });
     }
     const setToPrev = () => {
-        const prevMonth = new Date(displayedYear, displayedMonth-2, 1);
-        setDisplayedMonth(prevMonth.getMonth()+1);
-        setDisplayedYear(prevMonth.getFullYear());
+        const prevMonth = new Date(displayed.year, displayed.month-2, 1);
+        setDisplayed({
+            month: prevMonth.getMonth() + 1,
+            year: prevMonth.getFullYear(),
+        });
     }
     const setToNext = () => {
-        const nextMonth = new Date(displayedYear, displayedMonth, 1);
-        setDisplayedMonth(nextMonth.getMonth()+1);
-        setDisplayedYear(nextMonth.getFullYear());
+        const nextMonth = new Date(displayed.year, displayed.month, 1);
+        setDisplayed({
+            month: nextMonth.getMonth() + 1,
+            year: nextMonth.getFullYear(),
+        });
     }
 
-    // generate runs 
-    const generateCalendarRuns = (calendarStartDate: string, habit: Habit, numWeeks: number = 5) => {
+    // generate runs
+    const generateCalendarRuns = (calendarStartDate: string, habit: Habit, numWeeks: number) => {
         let runPatterns = [];
-
+        let index = daysSince(habit.startDate, calendarStartDate)
         for (let i = 0; i < numWeeks; i++) {
             let run = 0;
             let runPattern: number[] = [];
             for (let dow = 0; dow < 7; dow++) {
-                let date = getRelativeDay((i * 7 + dow), calendarStartDate).date;
-                let isComplete = getStatus(habit, date) === HabitStatus.DONE;
+                let isComplete = habit.history[index] === HabitStatus.DONE;
                 if (isComplete) {
                     run++;
                 } else if (run !== 0) {
@@ -82,6 +89,7 @@ const Calendar = () => {
                 } else {
                     runPattern.push(run);
                 }
+                index++
             }
             if (run !== 0) {
                 runPattern.push(run);
@@ -95,30 +103,24 @@ const Calendar = () => {
     const weeks = Array.from({ length: numWeeks }, (_, i) => i + 1);
 
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-    //const startOfCalendarMonth = "2023-07-30";
-
+   
     const habitRuns = habits.map((habit) =>
         generateCalendarRuns(startOfCalendarMonth, habit, numWeeks)
     );
 
     // todo
     // add localised day labels
-    // add month and year label
     // add toggle between sun/mon start of week
-    // browse between months, storing the day that is the calendar start and the number of calendar weeks
     // add toggle to show/hide calendar
     // change background for days out of month
     // change background for current day
     // text truncating
-    // improve performance
     // need to fix div keys to be unique
-
     let index = 0; // should change this so that it is a map
     return (<>
         <HStack marginBottom={2} justify="space-between">
             <CalendarNavButtons onClickToday={setToCurrent} onClickBack={setToPrev} onClickNext={setToNext} />
-            <CalendarLabel month={displayedMonth} year={displayedYear} />
+            <CalendarLabel month={displayed.month} year={displayed.year} />
         </HStack>
 
         <div className="grid-container">
@@ -129,7 +131,7 @@ const Calendar = () => {
                 </>)}
                 {habitRuns.map((h, i) =>
                     h[week].map((span, j) =>
-                        span === 0 ? <div key={`${i}-${j}-${week}`} className="grid-item" /> : <div key={`${i}-${j}-${week}`} className="grid-item grid-run" style={{ gridColumn: `span ${span}` }}>{habits[i].description}</div>
+                        span === 0 ? <div key={`${i}-${j}-${week}`} className="grid-item grid-item-placeholding" /> : <div key={`${i}-${j}-${week}`} className="grid-item grid-run" style={{ gridColumn: `span ${span}` }}>{habits[i].description}</div>
                     )
                 )}
             </>)}

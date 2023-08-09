@@ -10,7 +10,6 @@ function App() {
 
     //const [user, setUser] = useState("Sample User");
     const user = "Sample User";
-
     return (<>
         <TopBar username={user} />
         <Heading align="center" fontSize='5xl' marginBottom={5} marginTop={4}>Daily Habits</Heading>
