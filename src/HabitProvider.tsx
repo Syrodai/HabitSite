@@ -12,7 +12,7 @@ export interface Habit {
 
 interface HabitContextType {
     habits: Habit[];
-    setHabits: (habit: Habit[]) => void;
+    //setHabits: (habit: Habit[]) => void;
     fulfillHabit: (habit: Habit, date: string) => void;
     failHabit: (habit: Habit, date: string) => void;
     deleteHabit: (habit: Habit, askConfirmation?: boolean) => void;

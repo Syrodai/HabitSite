@@ -1,5 +1,5 @@
 import { ListItem, HStack, Box, InputGroup, Input, InputRightElement, Button, Text } from "@chakra-ui/react";
-import { useContext, useEffect, useRef, useState } from "react";
+import { SyntheticEvent, useContext, useEffect, useRef, useState } from "react";
 import { getDay, today, yesterday } from "../date";
 import { Habit, HabitContext, HabitStatus } from "../HabitProvider";
 import FulfillButtons from "./FulfillButtons";
@@ -22,7 +22,7 @@ const HabitListItem = ({ habit }: Props) => {
     const inputRef = useRef<HTMLInputElement>(null);
     useEffect(() => inputRef?.current?.focus(), [editing]);
 
-    const onSubmit = (event) => {
+    const onSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
         editHabit(habit, { ...habit, description: newDescription })
         setEditing(false);

@@ -10,11 +10,6 @@ import CalendarNavButtons from './CalendarNavButtons';
 import "./Calendar.css";
 import CalendarLabel from './CalendarLabel';
 
-interface Event {
-    title: string;
-    start: Date;
-    end: Date;
-}
 
 // helper function that turns an index of a calendar month into the correct day of month
 const calendarIndexToDate = (index: number, startDate: number, daysInMonth1: number, daysInMonth2: number) => {
@@ -46,7 +41,7 @@ const Calendar = () => {
 
     const { startOfCalendarMonth, startDate } = getCalendarInfo(displayed.month, displayed.year, weekStartsOnSunday);
     const daysInMonth1 = new Date(displayed.year, displayed.month + (startDate===1 ? 0 : -1), 0).getDate();
-    const daysInMonth2 = new Date(displayed.year, displayed.month + (startDate === 1 ? 1 : 0), 0).getDate();
+    const daysInMonth2 = new Date(displayed.year, displayed.month + (startDate===1 ? 1 : 0), 0).getDate();
 
     // navigation button functions
     const setToCurrent = () => {
@@ -79,8 +74,7 @@ const Calendar = () => {
             let run = 0;
             let runPattern: number[] = [];
             for (let dow = 0; dow < 7; dow++) {
-                let isComplete = habit.history[index] === HabitStatus.DONE;
-                if (isComplete) {
+                if (habit.history[index] === HabitStatus.DONE) {
                     run++;
                 } else if (run !== 0) {
                     runPattern.push(run);
