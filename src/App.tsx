@@ -1,9 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Heading, Box, HStack } from '@chakra-ui/react';
-import HabitList from './components/MainPage/HabitList';
-import TopBar from './components/MainPage/TopBar';
-import Calendar from './components/MainPage/Calendar/Calendar';
 import MainPage from "./components/MainPage/MainPage";
+import LoginPage from "./components/LoginPage/LoginPage";
 
 const App = () => {
     //const [user, setUser] = useState("Sample User");
@@ -13,7 +10,13 @@ const App = () => {
 
     //<BrowserRouter>
     return (
-        <MainPage user={user}/>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<LoginPage />} />
+                <Route path="main" element={<MainPage user={user} />} />
+                <Route path="*" element={404} />
+            </Routes>
+        </BrowserRouter>
     )
 }
 
