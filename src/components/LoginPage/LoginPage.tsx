@@ -1,7 +1,11 @@
-import { Input, Text, HStack, Button, Box, Heading, Center } from "@chakra-ui/react";
+import { Input, Text, HStack, Button, Box, Heading, Center, Stack } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 import { SyntheticEvent } from "react";
+import ColorModeSwitch from "../MainPage/ColorModeSwitch";
 
 const LoginPage = () => {
+    const navigate = useNavigate();
+
     const onSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
         const username = (((event.target as HTMLFormElement)[0]) as HTMLInputElement).value;
@@ -15,7 +19,7 @@ const LoginPage = () => {
         //       send hash to server
         //       if server responds ok,
         //          set user and hash state
-        //          route to main page
+                    navigate("/main");
         //       else
         //          failed login error
         // if no,
@@ -23,6 +27,7 @@ const LoginPage = () => {
     }
 
     return (<>
+        <Stack direction="row" justify="flex-end"><ColorModeSwitch /></Stack>
         <Heading textAlign="center" marginBottom={10} marginTop="10%">Login Page</Heading>
         <Center>
             <Box width="25%">
