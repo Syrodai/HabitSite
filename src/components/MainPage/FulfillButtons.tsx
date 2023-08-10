@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 import { Button, Text, HStack } from "@chakra-ui/react";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
-import { Habit, HabitContext, HabitStatus } from "../HabitProvider";
-import { daysSince } from '../date';
+import { Habit, HabitContext, HabitStatus } from "../../HabitProvider";
+import { daysSince } from '../../date';
 
 
 

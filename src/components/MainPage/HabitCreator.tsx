@@ -1,8 +1,8 @@
 import { Button, HStack, Input } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
 import { useEffect, useRef, useState, useContext } from 'react';
-import '../App.css';
-import { HabitContext } from '../HabitProvider';
+import '../../App.css';
+import { HabitContext } from '../../HabitProvider';
 
 
 const HabitCreator = () => {

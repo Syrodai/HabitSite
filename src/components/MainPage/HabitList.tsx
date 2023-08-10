@@ -1,8 +1,8 @@
 import { List, HStack, Text, Box, VStack} from "@chakra-ui/react";
 import { useContext } from "react";
 import HabitCreator from "./HabitCreator";
-import { Habit, HabitContext } from "../HabitProvider";
-import { getDay, today, yesterday } from "../date";
+import { Habit, HabitContext } from "../../HabitProvider";
+import { getDay, today, yesterday } from "../../date";
 import HabitListItem from "./HabitListItem";
 
 const HabitList = () => {

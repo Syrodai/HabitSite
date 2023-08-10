@@ -1,7 +1,7 @@
 import { ListItem, HStack, Box, InputGroup, Input, InputRightElement, Button, Text } from "@chakra-ui/react";
 import { SyntheticEvent, useContext, useEffect, useRef, useState } from "react";
-import { getDay, today, yesterday } from "../date";
-import { Habit, HabitContext, HabitStatus } from "../HabitProvider";
+import { getDay, today, yesterday } from "../../date";
+import { Habit, HabitContext, HabitStatus } from "../../HabitProvider";
 import FulfillButtons from "./FulfillButtons";
 import QuickEditMenu from "./QuickEditMenu";
 import Streak from "./Streak";

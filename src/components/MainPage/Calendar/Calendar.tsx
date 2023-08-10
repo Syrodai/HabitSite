@@ -2,10 +2,10 @@
 //import "react-big-calendar/lib/css/react-big-calendar.css";
 //import moment from 'moment';
 
-import {  Habit, HabitContext, HabitStatus } from '../../HabitProvider';
+import {  Habit, HabitContext, HabitStatus } from '../../../HabitProvider';
 import { useContext, useState } from 'react';
 import { HStack } from '@chakra-ui/react';
-import { daysSince, getRelativeDay } from '../../date';
+import { daysSince, getRelativeDay } from '../../../date';
 import CalendarNavButtons from './CalendarNavButtons';
 import "./Calendar.css";
 import CalendarLabel from './CalendarLabel';

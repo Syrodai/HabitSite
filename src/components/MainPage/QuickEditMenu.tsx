@@ -1,8 +1,8 @@
 import { HStack, Box } from "@chakra-ui/react";
 import { EditIcon, DeleteIcon, UnlockIcon, LockIcon } from "@chakra-ui/icons";
 import { useContext, useState } from 'react';
-import { HabitContext, Habit } from "../HabitProvider";
-import "../App.css";
+import { HabitContext, Habit } from "../../HabitProvider";
+import "../../App.css";
 
 interface Props {
     habit: Habit;

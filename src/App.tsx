@@ -1,23 +1,20 @@
-//import './App.css'
-//import { useState } from 'react';
-import HabitList from './components/HabitList';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Heading, Box, HStack } from '@chakra-ui/react';
-import TopBar from './components/TopBar';
-import Calendar from './components/Calendar/Calendar';
+import HabitList from './components/MainPage/HabitList';
+import TopBar from './components/MainPage/TopBar';
+import Calendar from './components/MainPage/Calendar/Calendar';
+import MainPage from "./components/MainPage/MainPage";
 
-function App() {
-    
-
+const App = () => {
     //const [user, setUser] = useState("Sample User");
     const user = "Sample User";
-    return (<>
-        <TopBar username={user} />
-        <Heading textAlign="center" fontSize='5xl' marginBottom={5} marginTop={4}>Daily Habits</Heading>
-        <HStack mb="2%">
-            <Box ml="2%"><HabitList /></Box>
-        </HStack>
-        <Box width="50%" mb="50px"><Calendar /></Box>
-    </>)
+
+
+
+    //<BrowserRouter>
+    return (
+        <MainPage user={user}/>
+    )
 }
 
 export default App;

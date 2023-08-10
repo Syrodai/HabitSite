@@ -1,6 +1,6 @@
 import { Badge } from "@chakra-ui/react";
-import { daysSince, today } from "../date";
-import { Habit, HabitStatus } from "../HabitProvider";
+import { daysSince, today } from "../../date";
+import { Habit, HabitStatus } from "../../HabitProvider";
 
 interface Props {
     habit: Habit;
