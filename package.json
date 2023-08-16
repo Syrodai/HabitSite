@@ -14,13 +14,17 @@
     "@chakra-ui/react": "^2.8.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@hookform/resolvers": "^3.2.0",
+    "axios": "^1.4.0",
+    "bcrypt": "^5.1.0",
     "crypto-js": "^4.1.1",
     "framer-motion": "^10.14.0",
-    "moment": "^2.29.4",
     "react": "^18.2.0",
-    "react-big-calendar": "^1.8.1",
+    "react-auth-kit": "^2.12.6",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.15.0"
+    "react-hook-form": "^7.45.4",
+    "react-router-dom": "^6.15.0",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
