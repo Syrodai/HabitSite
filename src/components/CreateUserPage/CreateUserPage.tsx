@@ -11,6 +11,11 @@ import login from "../../services/login";
 const schema = z.object({
     username: z.string().min(2, {message: 'Username is too short'}),
     password: z.string().min(8, { message: 'Password must be at least 8 characters' }),
+    confirmpassword: z.string()
+})
+    .refine((data: FormData) => data.confirmpassword === data.password, { //console.log(data.confirmpassword, data.password, data.confirmpassword === data.password) &&
+    message: "Confirmation must be identical",
+    path: ['confirmpassword'],
 });
 type FormData = z.infer<typeof schema>;
 
@@ -18,19 +23,19 @@ interface Props {
     setUser: (user: string) => void;
 }
 
-const LoginPage = ({ setUser }: Props) => {
+const CreateUserPage = ({ setUser }: Props) => {
     const navigate = useNavigate();
     const signIn = useSignIn();
-    const [loginErrorText, setLoginErrorText] = useState("");
 
     
     const {
         register,
         handleSubmit,
-        formState: { errors, isValid },
+        formState: { errors },
     } = useForm<FormData>({resolver: zodResolver(schema)});
 
     const onSubmit = async (data: FieldValues) => {
+        /*
         const result = await login(data.username, data.password, signIn)
         if (result.success) {
             const capitalizedName = data.username.charAt(0).toUpperCase() + data.username.slice(1).toLowerCase();
@@ -39,12 +44,12 @@ const LoginPage = ({ setUser }: Props) => {
         } else {
             setLoginErrorText(result.message);
         }
-        
+        */
     }
 
     return (<>
         <Stack direction="row" justify="flex-end"><ColorModeSwitch /></Stack>
-        <Heading textAlign="center" marginBottom={10} marginTop="10%">Login Page</Heading>
+        <Heading textAlign="center" marginBottom={10} marginTop="10%">Create an Account</Heading>
         <Center>
             <Box width="25%">
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -58,13 +63,16 @@ const LoginPage = ({ setUser }: Props) => {
                         <Input type="password" {...register('password')} autoComplete="off" />
                     </ HStack>
                     {errors.password && <Text color="red">{errors.password.message}</Text>}
-                    <Button width="100%" colorScheme="blue" type="submit" isDisabled={!isValid}>Sign In</Button>
+                    <HStack marginBottom={1}>
+                        <Text>Confirm Password:</Text>
+                        <Input type="password" {...register('confirmpassword')} autoComplete="off" />
+                    </ HStack>
+                    {errors.confirmpassword && <Text color="red">{errors.confirmpassword.message}</Text>}
+                    <Button width="100%" colorScheme="blue" type="submit" >Create</Button>
                 </form>
-                {loginErrorText && <Text color="red">{loginErrorText}</Text>}
-                <Link color="blue" onClick={() => navigate("/create")}>Create Account</Link>
             </Box>
         </Center>
     </>)
 }
 
-export default LoginPage;
+export default CreateUserPage;
