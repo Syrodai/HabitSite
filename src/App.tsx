@@ -1,19 +1,20 @@
+import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainPage from "./components/MainPage/MainPage";
 import LoginPage from "./components/LoginPage/LoginPage";
-import { RequireAuth } from "react-auth-kit";
+import { RequireAuth, useAuthUser } from "react-auth-kit";
 
 const App = () => {
-    //const [user, setUser] = useState("Sample User");
-    const user = "Sample User";
+    const auth = useAuthUser();
+    const [user, setUser] = useState(auth()?.username ?
+        { capitalized: auth().username.charAt(0).toUpperCase() + auth().username.slice(1).toLowerCase(), original: auth().username} :
+        { capitalized: "", original: "" }
+    );
 
-
-
-    //<BrowserRouter>
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<LoginPage />} />
+                <Route path="/" element={<LoginPage setUser={setUser} />} />
                 <Route path="main" element={
                     <RequireAuth loginPath={"/"}>
                         <MainPage user={user} />

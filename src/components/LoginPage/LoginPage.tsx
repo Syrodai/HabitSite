@@ -14,7 +14,11 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 
-const LoginPage = () => {
+interface Props {
+    setUser: (user: string) => void;
+}
+
+const LoginPage = ({ setUser }: Props) => {
     const navigate = useNavigate();
     const signIn = useSignIn();
     const [loginErrorText, setLoginErrorText] = useState("");
@@ -29,6 +33,8 @@ const LoginPage = () => {
     const onSubmit = async (data: FieldValues) => {
         const result = await login(data.username, data.password, signIn)
         if (result.success) {
+            const capitalizedName = data.username.charAt(0).toUpperCase() + data.username.slice(1).toLowerCase();
+            setUser({ capitalized: capitalizedName, original: data.username});
             navigate("/main");
         } else {
             setLoginErrorText(result.message);
@@ -60,4 +66,4 @@ const LoginPage = () => {
     </>)
 }
 
-export default LoginPage
+export default LoginPage;

@@ -1,4 +1,6 @@
-import { HStack, Text } from '@chakra-ui/react';
+import { HStack, Text, Link } from '@chakra-ui/react';
+import { useSignOut } from 'react-auth-kit';
+import { useNavigate } from 'react-router-dom';
 import ColorModeSwitch from './ColorModeSwitch';
 
 interface Props {
@@ -8,6 +10,8 @@ interface Props {
 // date will be a child component
 
 const TopBar = ({ username }: Props) => {
+    const signOut = useSignOut();
+    const navigate = useNavigate();
 
     const dateFormat: Intl.DateTimeFormatOptions = {
         weekday: 'long',
@@ -16,15 +20,20 @@ const TopBar = ({ username }: Props) => {
         day: 'numeric',
         timeZone: 'America/Los_Angeles'
     }
-
     const date = new Date();
-    //console.log(date.getTimezoneOffset());
+
+    const logout = () => {
+        signOut();
+        navigate("/");
+    }
+    
 
     return (
         <HStack justifyContent='space-between'>
             <Text>{date.toLocaleDateString('en-US', dateFormat)}</Text>
             <HStack>
                 <Text color="orange">{username}</Text>
+                <Link color="blue" onClick={logout}>Sign Out</Link>
                 <ColorModeSwitch />
             </HStack>
         </HStack>
