@@ -16,7 +16,7 @@ const App = () => {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<LoginPage setUser={setUser} />} />
-                <Route path="create" element={<CreateUserPage/>} />
+                <Route path="create" element={<CreateUserPage setUser={setUser} />} />
                 <Route path="main" element={
                     <RequireAuth loginPath={"/"}>
                         <MainPage user={user} />

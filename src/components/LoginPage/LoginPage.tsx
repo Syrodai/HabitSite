@@ -6,7 +6,7 @@ import { useSignIn } from "react-auth-kit";
 import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod"
 import ColorModeSwitch from "../MainPage/ColorModeSwitch";
-import login from "../../services/login";
+import { login } from "../../services/account";
 
 const schema = z.object({
     username: z.string().min(2, {message: 'Username is too short'}),
@@ -39,7 +39,6 @@ const LoginPage = ({ setUser }: Props) => {
         } else {
             setLoginErrorText(result.message);
         }
-        
     }
 
     return (<>

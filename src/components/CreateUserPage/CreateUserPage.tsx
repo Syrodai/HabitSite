@@ -6,7 +6,7 @@ import { useSignIn } from "react-auth-kit";
 import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod"
 import ColorModeSwitch from "../MainPage/ColorModeSwitch";
-import login from "../../services/login";
+import { createAccount } from "../../services/account";
 
 const schema = z.object({
     username: z.string().min(2, {message: 'Username is too short'}),
@@ -23,10 +23,11 @@ interface Props {
     setUser: (user: string) => void;
 }
 
+
 const CreateUserPage = ({ setUser }: Props) => {
     const navigate = useNavigate();
     const signIn = useSignIn();
-
+    const [createErrorText, setCreateErrorText] = useState("");
     
     const {
         register,
@@ -35,16 +36,14 @@ const CreateUserPage = ({ setUser }: Props) => {
     } = useForm<FormData>({resolver: zodResolver(schema)});
 
     const onSubmit = async (data: FieldValues) => {
-        /*
-        const result = await login(data.username, data.password, signIn)
+        const result = await createAccount(data.username, data.password, signIn);
         if (result.success) {
             const capitalizedName = data.username.charAt(0).toUpperCase() + data.username.slice(1).toLowerCase();
-            setUser({ capitalized: capitalizedName, original: data.username});
+            setUser({ capitalized: capitalizedName, original: data.username });
             navigate("/main");
         } else {
-            setLoginErrorText(result.message);
+            setCreateErrorText(result.message);
         }
-        */
     }
 
     return (<>
@@ -70,6 +69,7 @@ const CreateUserPage = ({ setUser }: Props) => {
                     {errors.confirmpassword && <Text color="red">{errors.confirmpassword.message}</Text>}
                     <Button width="100%" colorScheme="blue" type="submit" >Create</Button>
                 </form>
+                {createErrorText && <Text color="red">{createErrorText}</Text>}
             </Box>
         </Center>
     </>)

@@ -1,4 +1,3 @@
-import { useAuthUser } from 'react-auth-kit';
 import { Heading, HStack, Box } from "@chakra-ui/react";
 import Calendar from "./Calendar/Calendar";
 import HabitList from "./HabitList";
