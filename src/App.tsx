@@ -8,8 +8,8 @@ import { RequireAuth, useAuthUser } from "react-auth-kit";
 const App = () => {
     const auth = useAuthUser();
     const [user, setUser] = useState(auth()?.username ?
-        { capitalized: auth().username.charAt(0).toUpperCase() + auth().username.slice(1).toLowerCase(), original: auth().username} :
-        { capitalized: "", original: "" }
+        { capitalized: auth().username.charAt(0).toUpperCase() + auth().username.slice(1).toLowerCase(), lower: auth().username.toLowerCase()} :
+        { capitalized: "", lower: "" }
     );
 
     return (

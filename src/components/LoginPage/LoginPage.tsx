@@ -31,6 +31,7 @@ const LoginPage = ({ setUser }: Props) => {
     } = useForm<FormData>({resolver: zodResolver(schema)});
 
     const onSubmit = async (data: FieldValues) => {
+        data.username = data.username.toLowerCase();
         const result = await login(data.username, data.password, signIn)
         if (result.success) {
             const capitalizedName = data.username.charAt(0).toUpperCase() + data.username.slice(1).toLowerCase();

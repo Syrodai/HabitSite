@@ -36,10 +36,11 @@ const CreateUserPage = ({ setUser }: Props) => {
     } = useForm<FormData>({resolver: zodResolver(schema)});
 
     const onSubmit = async (data: FieldValues) => {
+        data.username = data.username.toLowerCase();
         const result = await createAccount(data.username, data.password, signIn);
         if (result.success) {
             const capitalizedName = data.username.charAt(0).toUpperCase() + data.username.slice(1).toLowerCase();
-            setUser({ capitalized: capitalizedName, original: data.username });
+            setUser({ capitalized: capitalizedName, lower: data.username });
             navigate("/main");
         } else {
             setCreateErrorText(result.message);
