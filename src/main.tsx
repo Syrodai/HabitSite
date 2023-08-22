@@ -9,16 +9,16 @@ import HabitProvider from './HabitProvider'
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
         <ChakraProvider>
-            <HabitProvider>
-                <AuthProvider
-                    authType={"cookie"}
-                    authName={"_auth"}
-                    cookieDomain={window.location.hostname}
-                    cookieSecure={false} // temporarily false. Set to true for https
-                >
+            <AuthProvider
+                authType={"cookie"}
+                authName={"_auth"}
+                cookieDomain={window.location.hostname}
+                cookieSecure={false} // temporarily false. Set to true for https
+            >
+                <HabitProvider>
                     <App />
-                </AuthProvider>
-            </HabitProvider>
+                </HabitProvider>
+            </AuthProvider>
         </ChakraProvider>
     </React.StrictMode>,
 )
