@@ -9,7 +9,6 @@ import { setDataKey } from './data';
 // returns { success: true, message: "some success message" } on success
 //         { success: false, message: "Error message" } on fail
 export const login = async (username: string, password: string, signIn: ({ }) => void, salt?: string) => {
-    
     try {
         if (!salt) {
             try {

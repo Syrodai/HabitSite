@@ -28,7 +28,7 @@ const LoginPage = ({ setUser }: Props) => {
     const {
         register,
         handleSubmit,
-        formState: { errors, isValid },
+        formState: { isValid },
     } = useForm<FormData>({resolver: zodResolver(schema)});
 
     const onSubmit = async (data: FieldValues) => {
@@ -53,12 +53,10 @@ const LoginPage = ({ setUser }: Props) => {
                         <Text>Username:</Text>
                         <Input {...register('username')} autoComplete="off" />
                     </ HStack>
-                    {errors.username && <Text color="red">{errors.username.message}</Text>}
                     <HStack marginBottom={1}>
                         <Text>Password:</Text>
                         <Input type="password" {...register('password')} autoComplete="off" />
                     </ HStack>
-                    {errors.password && <Text color="red">{errors.password.message}</Text>}
                     <Button width="100%" colorScheme="blue" type="submit" isDisabled={!isValid}>Sign In</Button>
                 </form>
                 {loginErrorText && <Text color="red">{loginErrorText}</Text>}

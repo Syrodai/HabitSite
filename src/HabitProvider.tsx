@@ -22,7 +22,8 @@ interface HabitContextType {
     createHabit: (desc: string) => void;                            
     editHabit: (habit: Habit, newHabit: Habit) => void;             
     getStatus: (habit: Habit, date: string) => HabitStatus;         
-    loadHabits: () => { success: boolean, message: string};
+    loadHabits: () => { success: boolean, message: string };
+    clearHabits: () => void;
 }
 
 export const HabitContext = createContext<HabitContextType | null>(null);
@@ -157,7 +158,6 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
         } else {
             console.log("Edit habit failed: " + response.message);
         }
-            
     }
 
     // fetch all habits for this user from the server
@@ -176,10 +176,11 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
 
         if (response.success) {
             try {
-                if (response.data === " ") {
+                const dataString = response.data[0].data;
+                if (dataString === " ") {
                     setHabits([]);
                 } else {
-                    const data = decryptData(response.data[0].data);
+                    const data = decryptData(dataString);
                     setHabits(data);
                 }
                 return { success: true, message: "Habits set" };
@@ -189,6 +190,11 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
         } else {
             return { success: true, message: "Error retrieving habits" };
         }
+    }
+
+    // set habits to empty for when signing out
+    const clearHabits = () => {
+        setHabits([]);
     }
     
     return (
@@ -201,6 +207,7 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
             getStatus,
             habits,
             loadHabits,
+            clearHabits,
             //setHabits,
         }}>
             {children}

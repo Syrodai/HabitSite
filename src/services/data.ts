@@ -6,6 +6,7 @@ import { Habit } from '../HabitProvider';
  *  of the user's password, salt, and constant string as the key.
  *  If the user resets their password, all data will need to
  *  be reencrypted by them using the new key.
+ *  If the password is forgotten, the data is effectively lost.
 */
 
 export let dataKey = "tmp"; // tmp

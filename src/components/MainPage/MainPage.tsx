@@ -15,11 +15,13 @@ interface LoadResult {
 }
 
 const MainPage = ({ user }: Props) => {
-    const { loadHabits } = useContext(HabitContext)!;
+    const { loadHabits, clearHabits } = useContext(HabitContext)!;
 
     const [loadResult, setLoadResult] = useState<LoadResult | null>(null);
 
+    
     useEffect(() => {
+        clearHabits();
         const load = async () => {
             setLoadResult(await loadHabits());
         }
