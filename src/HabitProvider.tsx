@@ -16,6 +16,7 @@ export interface Habit {
 interface HabitContextType {
     habits: Habit[];
     loadingHabits: boolean;
+    currentlyUpdating: boolean;
     fulfillHabit: (habit: Habit, date: string) => void;             
     failHabit: (habit: Habit, date: string) => void;                
     deleteHabit: (habit: Habit, askConfirmation?: boolean) => void; 
@@ -48,6 +49,7 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
     ]);
 
     const [loadingHabits, setLoadingHabits] = useState(false);
+    const [currentlyUpdating, setCurrentlyUpdating] = useState(false);
     
     // get status for a habit on a particular date
     const getStatus = (habit: Habit, date: string) => {
@@ -62,7 +64,9 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
 
         const encrypted = encryptData(newData);
 
+        setCurrentlyUpdating(true);
         const response = (await updateServerData(encrypted, authHeader)).data;
+        setCurrentlyUpdating(false);
         if (!response)
             console.log("Set status failed: No response from server");
 
@@ -96,7 +100,9 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
             const newData = habits.filter((h) => habit.id !== h.id);
             const encrypted = encryptData(newData);
 
+            setCurrentlyUpdating(true);
             const response = (await updateServerData(encrypted, authHeader)).data;
+            setCurrentlyUpdating(false);
             if (!response)
                 console.log("Delete habit failed: No response from server");
 
@@ -132,7 +138,10 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
         }];
         const encrypted = encryptData(newData);
 
+        setCurrentlyUpdating(true);
         const response = (await updateServerData(encrypted, authHeader)).data;
+        setCurrentlyUpdating(false);
+
         if (!response)
             console.log("Create habit failed: No response from server");
 
@@ -149,7 +158,9 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
 
         const encrypted = encryptData(newData);
 
+        setCurrentlyUpdating(true);
         const response = (await updateServerData(encrypted, authHeader)).data;
+        setCurrentlyUpdating(false);
 
         if (!response)
             console.log("Edit habit failed: No response from server");
@@ -205,6 +216,7 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
         <HabitContext.Provider value={{
             habits,
             loadingHabits,
+            currentlyUpdating,
             fulfillHabit,
             failHabit,
             deleteHabit,

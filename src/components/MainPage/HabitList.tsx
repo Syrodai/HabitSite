@@ -39,9 +39,6 @@ const HabitList = () => {
 
                 <Box width={625} ml={400}><HabitCreator /></Box>
             </>}
-
-            
-
         </div>
     )
 }

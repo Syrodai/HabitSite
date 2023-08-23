@@ -1,6 +1,8 @@
-import { HStack, Text, Link } from '@chakra-ui/react';
+import { HStack, Text, Link, Spinner } from '@chakra-ui/react';
+import { useContext } from 'react';
 import { useSignOut } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
+import { HabitContext } from '../../HabitProvider';
 import ColorModeSwitch from './ColorModeSwitch';
 
 interface Props {
@@ -12,6 +14,7 @@ interface Props {
 const TopBar = ({ username }: Props) => {
     const signOut = useSignOut();
     const navigate = useNavigate();
+    const { currentlyUpdating } = useContext(HabitContext)!;
 
     const dateFormat: Intl.DateTimeFormatOptions = {
         weekday: 'long',
@@ -30,7 +33,11 @@ const TopBar = ({ username }: Props) => {
 
     return (
         <HStack justifyContent='space-between'>
-            <Text>{date.toLocaleDateString('en-US', dateFormat)}</Text>
+            <HStack>
+                <Text>{date.toLocaleDateString('en-US', dateFormat)}</Text>
+                { currentlyUpdating && <Spinner size='xs' />}
+            </HStack>
+            
             <HStack>
                 <Text color="orange">{username}</Text>
                 <Link color="blue" onClick={logout}>Sign Out</Link>
