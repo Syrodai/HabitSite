@@ -15,7 +15,7 @@ export interface Habit {
 
 interface HabitContextType {
     habits: Habit[];
-    //setHabits: (habit: Habit[]) => void;
+    loadingHabits: boolean;
     fulfillHabit: (habit: Habit, date: string) => void;             
     failHabit: (habit: Habit, date: string) => void;                
     deleteHabit: (habit: Habit, askConfirmation?: boolean) => void; 
@@ -46,7 +46,8 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
             history: [HabitStatus.PENDING]
         },*/
     ]);
-    //
+
+    const [loadingHabits, setLoadingHabits] = useState(false);
     
     // get status for a habit on a particular date
     const getStatus = (habit: Habit, date: string) => {
@@ -162,6 +163,7 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
 
     // fetch all habits for this user from the server
     const loadHabits = async () => {
+        setLoadingHabits(true);
         const response = await fetchData(authHeader);
         
         if (!response) {
@@ -173,6 +175,8 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
             console.log("Load habits failed: " + response.message);
             return response;
         }
+
+        setLoadingHabits(false);
 
         if (response.success) {
             try {
@@ -199,16 +203,16 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
     
     return (
         <HabitContext.Provider value={{
+            habits,
+            loadingHabits,
             fulfillHabit,
             failHabit,
             deleteHabit,
             createHabit,
             editHabit,
             getStatus,
-            habits,
             loadHabits,
             clearHabits,
-            //setHabits,
         }}>
             {children}
         </HabitContext.Provider>
