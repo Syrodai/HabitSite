@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Input, Text, HStack, Button, Box, Heading, Center, Stack, Link } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useForm, FieldValues } from "react-hook-form";
@@ -7,7 +7,6 @@ import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod"
 import ColorModeSwitch from "../MainPage/ColorModeSwitch";
 import { login } from "../../services/account";
-import { HabitContext } from "../../HabitProvider";
 
 const schema = z.object({
     username: z.string().min(1),

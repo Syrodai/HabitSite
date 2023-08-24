@@ -1,8 +1,9 @@
 import { HStack, Text, Link, Spinner } from '@chakra-ui/react';
 import { useContext } from 'react';
-import { useSignOut } from 'react-auth-kit';
+import { useSignOut, useAuthHeader } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
 import { HabitContext } from '../../HabitProvider';
+import { deleteAccount } from "../../services/account";
 import ColorModeSwitch from './ColorModeSwitch';
 
 interface Props {
@@ -15,6 +16,7 @@ const TopBar = ({ username }: Props) => {
     const signOut = useSignOut();
     const navigate = useNavigate();
     const { currentlyUpdating, clearHabits } = useContext(HabitContext)!;
+    const authHeader = useAuthHeader()();
 
     const dateFormat: Intl.DateTimeFormatOptions = {
         weekday: 'long',
@@ -31,10 +33,13 @@ const TopBar = ({ username }: Props) => {
         navigate("/");
     }
 
-    const deleteAccount = () => {
+    const closeAccount = async () => {
         const confirmationText = "Are you sure you want to permanently delete your account?";
-        if (window.confirm(confirmationText)) 
-            console.log('deleted')
+        if (window.confirm(confirmationText)) {
+            const res = await deleteAccount(authHeader);
+            console.log(res);
+            if (res.success) logout();
+        }
     }
 
     return (
@@ -47,7 +52,7 @@ const TopBar = ({ username }: Props) => {
             <HStack>
                 <Text color="orange">{username}</Text>
                 <Link color="blue" onClick={logout}>Sign Out</Link>
-                <Link color="red" onClick={deleteAccount}>Delete Account</Link>
+                <Link color="red" onClick={closeAccount}>Delete Account</Link>
                 <ColorModeSwitch />
             </HStack>
         </HStack>

@@ -60,12 +60,21 @@ export const createAccount = async (username: string, password: string, signIn: 
     }
 }
 
-export const deleteAccount = async () => {
+export const deleteAccount = async (authHeader: string) => {
     try {
-
+        const response = (await apiClient.delete("/closeAccount/", {
+            headers: {
+                'Authorization': authHeader,
+                'User': currentUser,
+            }
+        })).data;
+        if (response.success) {
+            return { success: true, message: "Account closed successfully" };
+        } else {
+            return { success: false, message: response.message };
+        }
     } catch (err) {
-        console.log(err.message);
-        return;
+        return { success: false, message: "Unknown Account Deletion Error" };
     }
 }
 
