@@ -50,6 +50,18 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
 
     const [loadingHabits, setLoadingHabits] = useState(false);
     const [currentlyUpdating, setCurrentlyUpdating] = useState(false);
+
+    // bring old habit histories up to date by making null statuses pending
+    // does not work directly on current habit array. Takes the array in as argument.
+    const populateWithPending = (data: Habit[]) => {
+        for (let h = 0; h < data.length; h++) {
+            const missingDays = daysSince(data[h].startDate) - data[h].history.length + 1;
+            for (let i = 0; i < missingDays; i++) {
+                data[h].history.push(HabitStatus.PENDING);
+            }
+        }
+        return data;
+    }
     
     // get status for a habit on a particular date
     const getStatus = (habit: Habit, date: string) => {
@@ -196,7 +208,7 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
                     setHabits([]);
                 } else {
                     const data = decryptData(dataString);
-                    setHabits(data);
+                    setHabits(populateWithPending(data));
                 }
                 return { success: true, message: "Habits set" };
             } catch (err) {

@@ -14,7 +14,7 @@ interface Props {
 const TopBar = ({ username }: Props) => {
     const signOut = useSignOut();
     const navigate = useNavigate();
-    const { currentlyUpdating } = useContext(HabitContext)!;
+    const { currentlyUpdating, clearHabits } = useContext(HabitContext)!;
 
     const dateFormat: Intl.DateTimeFormatOptions = {
         weekday: 'long',
@@ -27,9 +27,15 @@ const TopBar = ({ username }: Props) => {
 
     const logout = () => {
         signOut();
+        clearHabits();
         navigate("/");
     }
-    
+
+    const deleteAccount = () => {
+        const confirmationText = "Are you sure you want to permanently delete your account?";
+        if (window.confirm(confirmationText)) 
+            console.log('deleted')
+    }
 
     return (
         <HStack justifyContent='space-between'>
@@ -41,6 +47,7 @@ const TopBar = ({ username }: Props) => {
             <HStack>
                 <Text color="orange">{username}</Text>
                 <Link color="blue" onClick={logout}>Sign Out</Link>
+                <Link color="red" onClick={deleteAccount}>Delete Account</Link>
                 <ColorModeSwitch />
             </HStack>
         </HStack>

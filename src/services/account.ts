@@ -58,7 +58,15 @@ export const createAccount = async (username: string, password: string, signIn: 
     } catch (err) {
         return { success: false, message: "Unknown Account Creation Error"};
     }
-    
+}
+
+export const deleteAccount = async () => {
+    try {
+
+    } catch (err) {
+        console.log(err.message);
+        return;
+    }
 }
 
 // gets the user's data from the server
@@ -74,7 +82,7 @@ export const fetchData = async (authHeader: string) => {
         return response; // { success: bool, message/data: string }
     } catch (err) {
         console.log(err);
-        return { success: false, message: "Unknown error fetching data" };
+        return { success: false, message: "Error fetching data" };
     }
 }
 
