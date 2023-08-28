@@ -4,8 +4,7 @@ import MainPage from "./components/MainPage/MainPage";
 import LoginPage from "./components/LoginPage/LoginPage";
 import CreateUserPage from "./components/CreateUserPage/CreateUserPage";
 import { RequireAuth, useAuthUser } from "react-auth-kit";
-
-export let currentUser = "";
+import { initUser } from "./services/account";
 
 const App = () => {
     const auth = useAuthUser();
@@ -13,7 +12,8 @@ const App = () => {
         { capitalized: auth().username.charAt(0).toUpperCase() + auth().username.slice(1).toLowerCase(), lower: auth().username.toLowerCase()} :
         { capitalized: "", lower: "" }
     );
-    currentUser = user.lower;
+    initUser();
+    
 
     return (
         <BrowserRouter>

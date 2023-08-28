@@ -1,15 +1,36 @@
 import CryptoJS from 'crypto-js';
 import apiClient from './api-client';
 import getSalt from "./getSalt";
-import { currentUser } from '../App';
 import { setDataKey } from './data';
+import Cookies from 'js-cookie';
 
-// attempts to log in using the username and password
+// current user. Use user from App.tsx for rendering.
+
+let currentUser = "";
+
+export const initUser = () => {
+    try {
+        const userCookie = Cookies.get('_auth_state');
+        currentUser = userCookie !== undefined ? JSON.parse(userCookie).username : "";
+    } catch (err) {
+        currentUser = "";
+        console.log("Could not parse auth state cookie.", err)
+    }
+    
+}
+export const switchUser = (user: string) => {
+    currentUser = user;
+}
+
+// attempts to log in using the username and password, not for token logins
 // server creates temporary token
 // returns { success: true, message: "some success message" } on success
 //         { success: false, message: "Error message" } on fail
 export const login = async (username: string, password: string, signIn: ({ }) => void, salt?: string) => {
+    switchUser(username);
+
     try {
+        // get salt if needed
         if (!salt) {
             try {
                 salt = await getSalt(username);
@@ -18,11 +39,12 @@ export const login = async (username: string, password: string, signIn: ({ }) =>
             }
         }
 
-        //setDataKey(password, salt!);
         const passwordHash = CryptoJS.SHA256(password + salt).toString();
 
+        let response;
         try {
-            const response = await apiClient.post("/login", { username, passwordHash })
+            // post login and create auth cookie
+            response = await apiClient.post("/login", { username, passwordHash })
             signIn({
                 token: response.data.token,
                 expiresIn: 3600,
@@ -32,8 +54,17 @@ export const login = async (username: string, password: string, signIn: ({ }) =>
         } catch (err) {
             return { success: false, message: "Username or password is incorrect"};
         }
+
+        // set data key
+        const localKeyResponse = await getLocalStorageKey("Bearer " + response.data.token);
+        if (localKeyResponse.success) {
+            const localStorageKey = localKeyResponse.message;
+            setDataKey(password, salt!, localStorageKey);
+        } else {
+            return { success: false, message: localKeyResponse.message };
+        }
     } catch (error) {
-        return { success: false, message: "Unknown Login Error" };
+        return { success: false, message: "Login Error" };
     }
     return { success: true, message: "Login Success" };
 }
@@ -110,4 +141,23 @@ export const updateServerData = async (data: string, authHeader: string) => {
     } catch (err) {
         return { success: false, message: "Error updating data" };
     }
+}
+
+export const getLocalStorageKey = async (authHeader: string) => {
+    try {
+        const response = (await apiClient.get("/local/", {
+            headers: {
+                'Authorization': authHeader,
+                'User': currentUser,
+            }
+        })).data;
+        if (!response) return { success: false, message: "No response from server" }
+        return response; // { success: bool, message: key/err }
+    } catch (err) {
+        return { success: false, message: "Error fetching local key" };
+    }
+}
+
+export const changePassword = async (currentPassword: string) => {
+    currentPassword 
 }

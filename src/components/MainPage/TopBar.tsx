@@ -1,4 +1,4 @@
-import { HStack, Text, Link, Spinner, Menu, Button, MenuButton, MenuItem, MenuList, MenuDivider } from '@chakra-ui/react';
+import { HStack, Text, Spinner, Menu, Button, MenuButton, MenuItem, MenuList, MenuDivider } from '@chakra-ui/react';
 import { useContext } from 'react';
 import { useSignOut, useAuthHeader } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
@@ -29,6 +29,7 @@ const TopBar = ({ username }: Props) => {
 
     const logout = () => {
         signOut();
+        localStorage.removeItem('dataKey');
         clearHabits();
         navigate("/");
     }
@@ -37,7 +38,6 @@ const TopBar = ({ username }: Props) => {
         const confirmationText = "Are you sure you want to permanently delete your account?";
         if (window.confirm(confirmationText)) {
             const res = await deleteAccount(authHeader);
-            console.log(res);
             if (res.success) logout();
         }
     }
@@ -48,7 +48,6 @@ const TopBar = ({ username }: Props) => {
                 <Text>{date.toLocaleDateString('en-US', dateFormat)}</Text>
                 {currentlyUpdating && <Spinner size='xs' />}
             </HStack>
-            
 
             <HStack>
                 <Menu>

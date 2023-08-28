@@ -9,10 +9,19 @@ import { Habit } from '../HabitProvider';
  *  If the password is forgotten, the data is effectively lost.
 */
 
-export let dataKey = "tmp"; // tmp
+export let dataKey = "";
 
-export const setDataKey = (password: string, salt: string) => {
-    //dataKey = CryptoJS.SHA256(password + salt + "dataKey").toString();
+export const setDataKey = (password: string, salt: string, localStorageKey: string) => {
+    dataKey = CryptoJS.SHA256(password + salt + "dataKey").toString();
+    const iv = CryptoJS.enc.Utf8.parse('iv');
+    const encryptedDataKey = CryptoJS.AES.encrypt(dataKey, localStorageKey, { iv: iv }).toString();
+    localStorage.setItem('dataKey', encryptedDataKey);
+}
+
+export const loadDataKey = (localStorageKey: string) => {
+    const encryptedDataKey = localStorage.getItem('dataKey');
+    const iv = CryptoJS.enc.Utf8.parse('iv');
+    dataKey = CryptoJS.AES.decrypt(encryptedDataKey, localStorageKey, { iv: iv }).toString(CryptoJS.enc.Utf8);
 }
 
 export const encryptData = (data: Habit[]) => {

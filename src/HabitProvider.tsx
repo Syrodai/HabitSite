@@ -1,8 +1,8 @@
 import { useState, createContext, ReactNode } from 'react';
 import { useAuthHeader } from 'react-auth-kit';
 import { daysSince, today } from './date';
-import { fetchData, updateServerData } from './services/account';
-import { decryptData, encryptData } from './services/data';
+import { fetchData, updateServerData, getLocalStorageKey } from './services/account';
+import { decryptData, encryptData, loadDataKey } from './services/data';
 
 export enum HabitStatus { PENDING = 1, DONE = 2, FAILED = 3 }; // should not be changed once data becomes permanently stored
 
@@ -187,22 +187,29 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
     // fetch all habits for this user from the server
     const loadHabits = async () => {
         setLoadingHabits(true);
+
         const response = await fetchData(authHeader);
+        const keyResponse = await getLocalStorageKey(authHeader);
         
-        if (!response) {
+        if (!response || !keyResponse) {
             console.log("Load habits failed: No response from server");
             return { success: false, message: "No response from server" }
+        }
+
+        if (!keyResponse.success) {
+            console.log("Load habits get key failed: " + keyResponse.message);
+            return response;
         }
         
         if (!response.success) {
             console.log("Load habits failed: " + response.message);
             return response;
         }
-
-        setLoadingHabits(false);
+        
 
         if (response.success) {
             try {
+                loadDataKey(keyResponse.message)
                 const dataString = response.data[0].data;
                 if (dataString === " ") {
                     setHabits([]);
@@ -210,6 +217,7 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
                     const data = decryptData(dataString);
                     setHabits(populateWithPending(data));
                 }
+                setLoadingHabits(false);
                 return { success: true, message: "Habits set" };
             } catch (err) {
                 return { success: false, message: "Error decrypting habits" };
