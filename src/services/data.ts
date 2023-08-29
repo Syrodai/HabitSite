@@ -11,10 +11,17 @@ import { Habit } from '../HabitProvider';
 
 export let dataKey = "";
 
-export const setDataKey = (password: string, salt: string, localStorageKey: string) => {
-    dataKey = CryptoJS.SHA256(password + salt + "dataKey").toString();
+// create data key based on password, salt
+export const generateDataKey = (password: string, salt: string) => {
+    const key = CryptoJS.SHA256(password + salt + "dataKey").toString();
+    return key;
+}
+
+// set data key
+export const setDataKey = (key: string, localStorageKey: string) => {
     const iv = CryptoJS.enc.Utf8.parse('iv');
-    const encryptedDataKey = CryptoJS.AES.encrypt(dataKey, localStorageKey, { iv: iv }).toString();
+    const encryptedDataKey = CryptoJS.AES.encrypt(key, localStorageKey, { iv: iv }).toString();
+    dataKey = key;
     localStorage.setItem('dataKey', encryptedDataKey);
 }
 
@@ -24,12 +31,12 @@ export const loadDataKey = (localStorageKey: string) => {
     dataKey = CryptoJS.AES.decrypt(encryptedDataKey, localStorageKey, { iv: iv }).toString(CryptoJS.enc.Utf8);
 }
 
-export const encryptData = (data: Habit[]) => {
+export const encryptData = (data: Habit[], key?: string) => {
     if (!dataKey) {
         throw new Error('dataKey is not set');
     } else {
         const dataString = JSON.stringify(data);
-        const key = dataKey;
+        if(key === undefined) key = dataKey;
         const iv = "iv";
         return CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(dataString), key, { iv: iv }).toString();
     }

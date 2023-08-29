@@ -5,6 +5,7 @@ import LoginPage from "./components/LoginPage/LoginPage";
 import CreateUserPage from "./components/CreateUserPage/CreateUserPage";
 import { RequireAuth, useAuthUser } from "react-auth-kit";
 import { initUser } from "./services/account";
+import ChangePasswordPage from "./components/ChangePasswordPage/ChangePasswordPage";
 
 const App = () => {
     const auth = useAuthUser();
@@ -23,6 +24,11 @@ const App = () => {
                 <Route path="main" element={
                     <RequireAuth loginPath={"/"}>
                         <MainPage user={user} />
+                    </RequireAuth>
+                } />
+                <Route path="changepassword" element={
+                    <RequireAuth loginPath={"/"}>
+                        <ChangePasswordPage />
                     </RequireAuth>
                 } />
                 <Route path="*" element={404} />

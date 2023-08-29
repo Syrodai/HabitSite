@@ -34,6 +34,10 @@ const TopBar = ({ username }: Props) => {
         navigate("/");
     }
 
+    const changePassword = () => {
+        navigate("/changepassword");
+    }
+
     const closeAccount = async () => {
         const confirmationText = "Are you sure you want to permanently delete your account?";
         if (window.confirm(confirmationText)) {
@@ -54,7 +58,7 @@ const TopBar = ({ username }: Props) => {
                     <MenuButton color="orange" as={Button}>{username}</MenuButton>
                     <MenuList>
                         <MenuItem color="blue" onClick={logout}>Sign Out</MenuItem>
-                        <MenuItem color="blue">Change Password</MenuItem>
+                        <MenuItem color="blue" onClick={changePassword}>Change Password</MenuItem>
                         <MenuDivider />
                         <MenuItem color="red" onClick={closeAccount}>Delete Account</MenuItem>
                     </MenuList>
@@ -65,11 +69,4 @@ const TopBar = ({ username }: Props) => {
     )
 }
 
-/*
-<Menu>
-    <MenuButton as={Button}>{username}</MenuButton>
-    <MenuItem onClick={logout}>Sign Out</MenuItem>
-    <MenuItem onClick={closeAccount}>Delete Account</MenuItem>
-</Menu>
-*/
 export default TopBar;

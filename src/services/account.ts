@@ -1,11 +1,11 @@
 import CryptoJS from 'crypto-js';
 import apiClient from './api-client';
 import getSalt from "./getSalt";
-import { setDataKey } from './data';
+import { encryptData, generateDataKey, setDataKey } from './data';
 import Cookies from 'js-cookie';
+import { Habit } from '../HabitProvider';
 
-// current user. Use user from App.tsx for rendering.
-
+// Current user for http. Use user from App.tsx for rendering.
 let currentUser = "";
 
 export const initUser = () => {
@@ -59,7 +59,7 @@ export const login = async (username: string, password: string, signIn: ({ }) =>
         const localKeyResponse = await getLocalStorageKey("Bearer " + response.data.token);
         if (localKeyResponse.success) {
             const localStorageKey = localKeyResponse.message;
-            setDataKey(password, salt!, localStorageKey);
+            setDataKey(generateDataKey(password, salt!), localStorageKey);
         } else {
             return { success: false, message: localKeyResponse.message };
         }
@@ -158,6 +158,52 @@ export const getLocalStorageKey = async (authHeader: string) => {
     }
 }
 
-export const changePassword = async (currentPassword: string) => {
-    currentPassword 
+export const changePassword = async (currentPassword: string, newPassword: string, data: Habit[]) => {
+    // hash currentPassword
+    let currentSalt;
+    try {
+        currentSalt = await getSalt(currentUser);
+    } catch (err) {
+        return { success: false, message: "Failed to fetch salt" };
+    }
+    const currentPasswordHash = CryptoJS.SHA256(currentPassword + currentSalt).toString();
+
+    // generate new salt
+    const newSalt = generateSalt();
+
+    // hash new password
+    const newPasswordHash = CryptoJS.SHA256(newPassword + newSalt).toString();
+
+    // create new data key
+    const newDataKey = generateDataKey(newPassword, newSalt);
+    
+    
+    // encrypt data with new key
+    const newData = encryptData(data, newDataKey);
+
+    // send username, old password hash, salt, new password hash, encrypted data
+    let response;
+    try {
+        response = (await apiClient.post("/changepassword", { username: currentUser, currentPasswordHash, newPasswordHash, salt: newSalt, data: newData })).data;
+
+        if (response.success) {
+            // store new data key
+            const newLocalStorageKey = response.message;
+            setDataKey(newDataKey, newLocalStorageKey);
+            return { success: true, message: "Password changed successfully" }
+        } else {
+            return { success: false, message: "Failed to change Password" }
+        }
+    } catch (err) {
+        return { success: false, message: "Failed to change Password"}
+    }
+}
+
+const generateSalt = () => {
+    let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let str = '';
+    for (let i = 0; i < 16; i++) {
+        str += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return str;
 }
