@@ -9,11 +9,12 @@ import ColorModeSwitch from './ColorModeSwitch';
 interface Props {
     username: string,
     logOut: () => void;
+    toggleStartOfWeek: (startOnSunday: boolean) => void;
 }
 
 // date will be a child component
 
-const TopBar = ({ username, logOut }: Props) => {
+const TopBar = ({ username, logOut, toggleStartOfWeek }: Props) => {
     
     const navigate = useNavigate();
     const { currentlyUpdating } = useContext(HabitContext)!;
@@ -53,6 +54,7 @@ const TopBar = ({ username, logOut }: Props) => {
                     <MenuList>
                         <MenuItem color="blue" onClick={logOut}>Sign Out</MenuItem>
                         <MenuItem color="blue" onClick={changePassword}>Change Password</MenuItem>
+                        <MenuItem color="blue" onClick={toggleStartOfWeek}>Toggle Start of Week</MenuItem>
                         <MenuDivider />
                         <MenuItem color="red" onClick={closeAccount}>Delete Account</MenuItem>
                     </MenuList>

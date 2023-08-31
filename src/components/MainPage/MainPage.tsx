@@ -24,6 +24,8 @@ const MainPage = ({ user }: Props) => {
 
     const [loadResult, setLoadResult] = useState<LoadResult | null>(null);
 
+    const [weekStartOnSunday, setWeekStartOnSunday] = useState(true);
+
     const logOut = () => {
         signOut();
         localStorage.removeItem('dataKey');
@@ -41,13 +43,13 @@ const MainPage = ({ user }: Props) => {
     }, [])
 
     return (<>
-        <TopBar username={user.capitalized} logOut={logOut} />
+        <TopBar username={user.capitalized} logOut={logOut} toggleStartOfWeek={() => setWeekStartOnSunday(!weekStartOnSunday)} />
         <Heading textAlign="center" fontSize='5xl' marginBottom={5} marginTop={4}>Daily Habits</Heading>
         <HStack mb="2%">
             <Box ml="2%"><HabitList /></Box>
         </HStack>
         {loadResult?.success === false && <Text color="red">{loadResult.message}</Text>}
-        <Box width="50%" mb="50px"><Calendar /></Box>
+        <Box width="50%" mb="50px"><Calendar weekStartOnSunday={weekStartOnSunday} /></Box>
         {sessionExpired && <ExpiredSessionModal logOut={logOut} />}
     </>)
 }

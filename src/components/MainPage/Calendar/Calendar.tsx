@@ -27,8 +27,12 @@ const getCalendarInfo = (month: number, year: number, startOnSunday: boolean) =>
     return { startOfCalendarMonth, startDate };
 }
 
+interface Props {
+    weekStartOnSunday: boolean;
+}
+
 // needs to be made dark mode compatible
-const Calendar = () => {
+const Calendar = ({ weekStartOnSunday }: Props) => {
     const { habits } = useContext(HabitContext)!;
 
     const now = new Date();
@@ -37,9 +41,8 @@ const Calendar = () => {
         month: now.getMonth() + 1,
         year: now.getFullYear(),
     });
-    const weekStartsOnSunday = true;
 
-    const { startOfCalendarMonth, startDate } = getCalendarInfo(displayed.month, displayed.year, weekStartsOnSunday);
+    const { startOfCalendarMonth, startDate } = getCalendarInfo(displayed.month, displayed.year, weekStartOnSunday);
     const daysInMonth1 = new Date(displayed.year, displayed.month + (startDate===1 ? 0 : -1), 0).getDate();
     const daysInMonth2 = new Date(displayed.year, displayed.month + (startDate===1 ? 1 : 0), 0).getDate();
 
@@ -118,7 +121,7 @@ const Calendar = () => {
         </HStack>
 
         <div className="grid-container">
-            {days.map((dayLabel, i) => <div key={dayLabel} className="grid-top-label">{days[(i + (weekStartsOnSunday ? 0 : 1)) % 7]}</div>)}
+            {days.map((dayLabel, i) => <div key={dayLabel} className="grid-top-label">{days[(i + (weekStartOnSunday ? 0 : 1)) % 7]}</div>)}
             {weeks.map((_, week) => <>
                 {days.map((_, day) => <>
                     <div key={`label-${day}-${week}`} className="grid-item grid-label">{calendarIndexToDate(index++, startDate, daysInMonth1, daysInMonth2)}</div>
