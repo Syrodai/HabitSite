@@ -1,6 +1,9 @@
 import { Heading, HStack, Box, Text } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
+import { useSignOut } from 'react-auth-kit';
+import { useNavigate } from 'react-router-dom';
 import { HabitContext } from "../../HabitProvider";
+import ExpiredSessionModal from "../ExpiredSessionModal";
 import Calendar from "./Calendar/Calendar";
 import HabitList from "./HabitList";
 import TopBar from "./TopBar";
@@ -15,10 +18,19 @@ interface LoadResult {
 }
 
 const MainPage = ({ user }: Props) => {
-    const { loadHabits, clearHabits } = useContext(HabitContext)!;
+    const signOut = useSignOut();
+    const navigate = useNavigate();
+    const { loadHabits, clearHabits, sessionExpired, setSessionExpired } = useContext(HabitContext)!;
 
     const [loadResult, setLoadResult] = useState<LoadResult | null>(null);
 
+    const logOut = () => {
+        signOut();
+        localStorage.removeItem('dataKey');
+        clearHabits();
+        setSessionExpired(false);
+        navigate("/");
+    }
     
     useEffect(() => {
         clearHabits();
@@ -27,17 +39,16 @@ const MainPage = ({ user }: Props) => {
         }
         load();
     }, [])
-    
-    
 
     return (<>
-        <TopBar username={user.capitalized} />
+        <TopBar username={user.capitalized} logOut={logOut} />
         <Heading textAlign="center" fontSize='5xl' marginBottom={5} marginTop={4}>Daily Habits</Heading>
         <HStack mb="2%">
             <Box ml="2%"><HabitList /></Box>
         </HStack>
         {loadResult?.success === false && <Text color="red">{loadResult.message}</Text>}
         <Box width="50%" mb="50px"><Calendar /></Box>
+        {sessionExpired && <ExpiredSessionModal logOut={logOut} />}
     </>)
 }
 

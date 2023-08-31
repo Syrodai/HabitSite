@@ -17,6 +17,7 @@ interface HabitContextType {
     habits: Habit[];
     loadingHabits: boolean;
     currentlyUpdating: boolean;
+    sessionExpired: boolean;
     fulfillHabit: (habit: Habit, date: string) => void;             
     failHabit: (habit: Habit, date: string) => void;                
     deleteHabit: (habit: Habit, askConfirmation?: boolean) => void; 
@@ -25,6 +26,7 @@ interface HabitContextType {
     getStatus: (habit: Habit, date: string) => HabitStatus;         
     loadHabits: () => { success: boolean, message: string };
     clearHabits: () => void;
+    setSessionExpired: (sessionExpired: boolean) => void;
 }
 
 export const HabitContext = createContext<HabitContextType | null>(null);
@@ -50,6 +52,7 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
 
     const [loadingHabits, setLoadingHabits] = useState(false);
     const [currentlyUpdating, setCurrentlyUpdating] = useState(false);
+    const [sessionExpired, setSessionExpired] = useState(false);
 
     // bring old habit histories up to date by making null statuses pending
     // does not work directly on current habit array. Takes the array in as argument.
@@ -77,10 +80,15 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
         const encrypted = encryptData(newData);
 
         setCurrentlyUpdating(true);
-        const response = (await updateServerData(encrypted, authHeader)).data;
+        let response = (await updateServerData(encrypted, authHeader));
         setCurrentlyUpdating(false);
+        
+
         if (!response)
             console.log("Set status failed: No response from server");
+
+        setSessionExpired(response.isTokenError === true);
+        console.log(response)
 
         if (response.success) {
             setHabits(newData);
@@ -113,10 +121,16 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
             const encrypted = encryptData(newData);
 
             setCurrentlyUpdating(true);
-            const response = (await updateServerData(encrypted, authHeader)).data;
+            const response = (await updateServerData(encrypted, authHeader));
             setCurrentlyUpdating(false);
             if (!response)
                 console.log("Delete habit failed: No response from server");
+
+            if (response.isTokenError) {
+                setSessionExpired(true);
+            } else {
+                setSessionExpired(false);
+            }
 
             if (response.success) {
                 setHabits(newData);
@@ -151,11 +165,17 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
         const encrypted = encryptData(newData);
 
         setCurrentlyUpdating(true);
-        const response = (await updateServerData(encrypted, authHeader)).data;
+        const response = (await updateServerData(encrypted, authHeader));
         setCurrentlyUpdating(false);
 
         if (!response)
             console.log("Create habit failed: No response from server");
+
+        if (response.isTokenError) {
+            setSessionExpired(true);
+        } else {
+            setSessionExpired(false);
+        }
 
         if (response.success) {
             setHabits(newData);
@@ -171,11 +191,17 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
         const encrypted = encryptData(newData);
 
         setCurrentlyUpdating(true);
-        const response = (await updateServerData(encrypted, authHeader)).data;
+        const response = (await updateServerData(encrypted, authHeader));
         setCurrentlyUpdating(false);
 
         if (!response)
             console.log("Edit habit failed: No response from server");
+
+        if (response.isTokenError) {
+            setSessionExpired(true);
+        } else {
+            setSessionExpired(false);
+        }
 
         if (response.success) {
             setHabits(newData);
@@ -190,6 +216,12 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
 
         const response = await fetchData(authHeader);
         const keyResponse = await getLocalStorageKey(authHeader);
+
+        if (response.isTokenError || keyResponse.isTokenError) {
+            setSessionExpired(true);
+        } else {
+            setSessionExpired(false);
+        }
         
         if (!response || !keyResponse) {
             console.log("Load habits failed: No response from server");
@@ -245,6 +277,8 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
             getStatus,
             loadHabits,
             clearHabits,
+            sessionExpired,
+            setSessionExpired,
         }}>
             {children}
         </HabitContext.Provider>

@@ -61,7 +61,7 @@ export const login = async (username: string, password: string, signIn: ({ }) =>
             const localStorageKey = localKeyResponse.message;
             setDataKey(generateDataKey(password, salt!), localStorageKey);
         } else {
-            return { success: false, message: localKeyResponse.message };
+            return localKeyResponse;
         }
     } catch (error) {
         return { success: false, message: "Login Error" };
@@ -102,10 +102,11 @@ export const deleteAccount = async (authHeader: string) => {
         if (response.success) {
             return { success: true, message: "Account closed successfully" };
         } else {
-            return { success: false, message: response.message };
+            return response;
         }
     } catch (err) {
-        return { success: false, message: "Unknown Account Deletion Error" };
+        const tokenError = err.response?.data?.isTokenError === true;
+        return { success: false, message: "Unknown Account Deletion Error", isTokenError: tokenError };
     }
 }
 
@@ -121,25 +122,26 @@ export const fetchData = async (authHeader: string) => {
         if (!response) return { success: false, message: "No response from server" }
         return response; // { success: bool, message/data: string }
     } catch (err) {
-        console.log(err);
-        return { success: false, message: "Error fetching data" };
+        const tokenError = err.response?.data?.isTokenError === true;
+        return { success: false, message: "Error fetching data", isTokenError: tokenError};
     }
 }
 
 // update the server with the new user data
 export const updateServerData = async (data: string, authHeader: string) => {
     try {
-        const response = await apiClient.put("/data/", {
+        const response = (await apiClient.put("/data/", {
             data: data,
         }, {
             headers: {
                 'Authorization': authHeader,
                 'User': currentUser,
             }
-        });
+        })).data;
         return response; // { success: bool, message: string }
     } catch (err) {
-        return { success: false, message: "Error updating data" };
+        const tokenError = err.response?.data?.isTokenError === true;
+        return { success: false, message: "Error updating data", isTokenError: tokenError };
     }
 }
 
@@ -154,7 +156,8 @@ export const getLocalStorageKey = async (authHeader: string) => {
         if (!response) return { success: false, message: "No response from server" }
         return response; // { success: bool, message: key/err }
     } catch (err) {
-        return { success: false, message: "Error fetching local key" };
+        const tokenError = err.response?.data?.isTokenError === true;
+        return { success: false, message: "Error fetching local key", isTokenError: tokenError };
     }
 }
 
