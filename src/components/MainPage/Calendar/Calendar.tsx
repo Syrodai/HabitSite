@@ -20,7 +20,7 @@ const calendarIndexToDate = (index: number, startDate: number, daysInMonth1: num
 }
 
 const getCalendarInfo = (month: number, year: number, startOnSunday: boolean) => {
-    const dowIndex = (new Date(year, month - 1, 1).getDay() - (startOnSunday ? 0 : 1)) % 7;
+    const dowIndex = ((new Date(year, month - 1, 1).getDay() - (startOnSunday ? 0 : 1))+7) % 7;
     const start = getRelativeDay(-dowIndex, year.toString() + "-" + month.toString().padStart(2, '0') + "-" + "01");
     const startOfCalendarMonth = start.date;
     const startDate = parseInt(start.dayOfMonth)
