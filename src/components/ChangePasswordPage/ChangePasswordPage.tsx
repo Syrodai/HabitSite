@@ -61,7 +61,8 @@ const ChangePasswordPage = () => {
                             <Input type="password" {...register('confirmpassword')} autoComplete="off" />
                         </ HStack>
                         {errors.confirmpassword && <Text color="red">{errors.confirmpassword.message}</Text>}
-                        <Button width="100%" colorScheme="blue" type="submit" >Create</Button>
+                    <Button width="100%" colorScheme="blue" type="submit" >Change Password</Button>
+                    <Button marginTop={1} width="100%" onClick={() => navigate("/main")}>Cancel</Button>
                     </form>
                 {changePasswordErrorText && <Text color="red">{changePasswordErrorText}</Text>}
                 </Box>

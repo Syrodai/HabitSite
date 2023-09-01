@@ -8,21 +8,30 @@ import HabitListItem from "./HabitListItem";
 const HabitList = () => {
     const { habits, loadingHabits } = useContext(HabitContext)!;
 
+    const alwaysShowButtons = false;
+    const descriptionWidth = "200px"
+    const columnWidth = "120px";
+    const rowHeight = "35px";
+    const labelFontSize = "20px";
+    const smallLabelFontSize = "18px";
+
     return (
         <div>
-            
             <HStack>
-                <Text as='b' width={100}>{getDay(-2).dayOfWeek}</Text>
-                <VStack spacing={0} width={100}>
-                    <Text fontSize='20px' as='b'>Yesterday</Text>
-                    <Text>({yesterday().dayOfWeek})</Text>
-                </VStack>
-                <VStack spacing={0} width={180}>
-                    <Text fontSize='20px' as='b'>Today</Text>
-                    <Text>({today().dayOfWeek})</Text>
-                </VStack>
-                <Text fontSize='20px' as='b' width={300}>Habit</Text>
+                <HStack>
+                    <Text as='b' width={columnWidth} fontSize={smallLabelFontSize}>{getDay(-2).dayOfWeek}</Text>
+                    <VStack spacing={0} width={columnWidth}>
+                        <Text fontSize={labelFontSize} as='b'>Yesterday</Text>
+                        <Text>({yesterday().dayOfWeek})</Text>
+                    </VStack>
+                    <VStack spacing={0} width={columnWidth}>
+                        <Text fontSize={labelFontSize} as='b'>Today</Text>
+                        <Text>({today().dayOfWeek})</Text>
+                    </VStack>
+                </HStack>
+                <Text fontSize={labelFontSize} as='b' width={descriptionWidth}>Habit</Text>
             </HStack>
+            
 
             {loadingHabits && <>
                 <Skeleton marginBottom={1} height='30px' />
@@ -33,11 +42,11 @@ const HabitList = () => {
             {!loadingHabits && <>
                 <List>
                     {habits.map((habit: Habit) =>
-                        <HabitListItem habit={habit} key={habit.id} />
+                        <HabitListItem habit={habit} key={habit.id} alwaysShowButtons={alwaysShowButtons} descriptionWidth={descriptionWidth} columnWidth={columnWidth} rowHeight={rowHeight} />
                     )}
                 </List>
 
-                <Box width={625} ml={400}><HabitCreator /></Box>
+                <Box width={625} ml={385}><HabitCreator /></Box>
             </>}
         </div>
     )

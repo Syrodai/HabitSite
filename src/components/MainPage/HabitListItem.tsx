@@ -8,15 +8,18 @@ import Streak from "./Streak";
 
 interface Props {
     habit: Habit;
+    alwaysShowButtons: boolean;
+    descriptionWidth: string;
+    columnWidth: string;
+    rowHeight: string;
 }
 
-const HabitListItem = ({ habit }: Props) => {
+const HabitListItem = ({ habit, alwaysShowButtons, descriptionWidth, columnWidth, rowHeight }: Props) => {
     const [isLocked, setLocked] = useState(true);
     const [editing, setEditing] = useState(false);
     const [hovered, setHovered] = useState(false);
     const [newDescription, setNewDescription] = useState("");
     const { editHabit, getStatus } = useContext(HabitContext)!;
-
 
     // auto focus input
     const inputRef = useRef<HTMLInputElement>(null);
@@ -30,16 +33,16 @@ const HabitListItem = ({ habit }: Props) => {
 
     // spacing should be changed to be less repetitive
     return (
-        <ListItem key={habit.id} onMouseOver={() => setHovered(true)} onMouseOut={() => setHovered(false) }>
-            <HStack padding={1}>
+        <ListItem key={habit.id} onMouseOver={() => setHovered(true)} onMouseOut={() => setHovered(false)}>
+            <HStack padding={1} height={rowHeight}>
 
-                <Box width={100}><FulfillButtons habit={habit} date={getDay(-2).date} bigButton={false} isLocked={isLocked && getStatus(habit, getDay(-2).date) !== HabitStatus.PENDING} /></Box>
+                <Box width={columnWidth}><FulfillButtons alwaysShowButtons={alwaysShowButtons} habit={habit} date={getDay(-2).date} bigButton={false} isLocked={isLocked && getStatus(habit, getDay(-2).date) !== HabitStatus.PENDING} /></Box>
 
-                <Box width={100}><FulfillButtons habit={habit} date={yesterday().date} bigButton={false} isLocked={isLocked && getStatus(habit, yesterday().date) !== HabitStatus.PENDING} /></Box>
+                <Box width={columnWidth}><FulfillButtons alwaysShowButtons={alwaysShowButtons} habit={habit} date={yesterday().date} bigButton={false} isLocked={isLocked && getStatus(habit, yesterday().date) !== HabitStatus.PENDING} /></Box>
 
-                <Box width={180}><FulfillButtons habit={habit} date={today().date} bigButton={true} isLocked={isLocked && getStatus(habit, today().date) !== HabitStatus.PENDING} /></Box>
+                <Box width={columnWidth}><FulfillButtons alwaysShowButtons={alwaysShowButtons} habit={habit} date={today().date} bigButton={false} isLocked={isLocked && getStatus(habit, today().date) !== HabitStatus.PENDING} /></Box>
 
-                <Box width={300}>{editing ?
+                <Box width={descriptionWidth}>{editing ?
                     <form onSubmit={onSubmit}>
                         <InputGroup>
                             <Input ref={inputRef} defaultValue={habit.description} onChange={(event) => setNewDescription(event.target.value)} />
