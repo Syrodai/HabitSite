@@ -1,10 +1,6 @@
-//import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
-//import "react-big-calendar/lib/css/react-big-calendar.css";
-//import moment from 'moment';
-
 import {  Habit, HabitContext, HabitStatus } from '../../../HabitProvider';
 import { useContext, useState } from 'react';
-import { HStack } from '@chakra-ui/react';
+import { HStack, Text } from '@chakra-ui/react';
 import { daysSince, getRelativeDay } from '../../../date';
 import CalendarNavButtons from './CalendarNavButtons';
 import "./Calendar.css";
@@ -105,6 +101,11 @@ const Calendar = ({ weekStartOnSunday }: Props) => {
         generateCalendarRuns(startOfCalendarMonth, habit, numWeeks)
     );
 
+    const textOutline = {
+        //textShadow: '1px 1px 0 #888, -1px -1px 0 #888, 1px -1px 0 #888, -1px 1px 0 #888',
+        color: "#FFFFFF"
+    };
+
     // todo
     // add localised day labels
     // add toggle between sun/mon start of week
@@ -128,7 +129,7 @@ const Calendar = ({ weekStartOnSunday }: Props) => {
                 </>)}
                 {habitRuns.map((h, i) =>
                     h[week].map((span, j) =>
-                        span === 0 ? <div key={`${i}-${j}-${week}`} className="grid-item grid-item-placeholding" /> : <div key={`${i}-${j}-${week}`} className="grid-item grid-run" style={{ gridColumn: `span ${span}` }}>{habits[i].description}</div>
+                        span === 0 ? <div key={`${i}-${j}-${week}`} className="grid-item grid-item-placeholding" /> : <div key={`${i}-${j}-${week}`} className="grid-item grid-run" style={{ gridColumn: `span ${span}` }}><Text style={textOutline} fontSize="12px" marginLeft={1}>{habits[i].description}</Text></div>
                     )
                 )}
             </>)}
