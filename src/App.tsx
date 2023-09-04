@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import MainPage from "./components/MainPage/MainPage";
 import LoginPage from "./components/LoginPage/LoginPage";
 import CreateUserPage from "./components/CreateUserPage/CreateUserPage";

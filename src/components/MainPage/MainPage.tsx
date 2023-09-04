@@ -1,4 +1,4 @@
-import { Heading, HStack, Box, Text } from "@chakra-ui/react";
+import { Heading, Box, Text } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { HabitContext } from "../../HabitProvider";
 import { SettingsContext } from "../../SettingsProvider";
@@ -35,11 +35,9 @@ const MainPage = ({ user, logOut }: Props) => {
     return (<>
         <TopBar username={user.capitalized} logOut={logOut} />
         <Heading textAlign="center" fontSize='5xl' marginBottom={5} marginTop={4}>Daily Habits</Heading>
-        <HStack mb="2%">
-            <Box ml="2%"><HabitList /></Box>
-        </HStack>
+        <Box ml="10%" mb="30px" mr="10%"><HabitList /></Box>
         {loadResult?.success === false && <Text color="red">{loadResult.message}</Text>}
-        <Box width="50%" mb="50px"><Calendar weekStartOnSunday={!settings.mondayStart} /></Box>
+        <Box ml="10%" mr="10%" mb="500px"><Calendar weekStartOnSunday={!settings.mondayStart} /></Box>
         {sessionExpired && <ExpiredSessionModal logOut={logOut} />}
     </>)
 }
