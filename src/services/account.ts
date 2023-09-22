@@ -4,9 +4,19 @@ import getSalt from "./getSalt";
 import { encryptData, generateDataKey, setDataKey } from './data';
 import Cookies from 'js-cookie';
 import { Habit } from '../HabitProvider';
+import { Settings } from '../SettingsProvider';
+
+export interface SignInParams {
+    token: string;
+    expiresIn: number;
+    tokenType: string;
+    authState: { username: string };
+}
 
 // Current user for http. Use user from App.tsx for rendering.
 let currentUser = "";
+
+//let authHeader = Cookies.get('_auth') ? "Bearer " + Cookies.get('_auth') : "";
 
 export const initUser = () => {
     try {
@@ -26,7 +36,7 @@ export const switchUser = (user: string) => {
 // server creates temporary token
 // returns { success: true, message: "some success message" } on success
 //         { success: false, message: "Error message" } on fail
-export const login = async (username: string, password: string, signIn: ({ }) => void, salt?: string) => {
+export const login = async (username: string, password: string, signIn: (signInConfig: SignInParams) => boolean, salt?: string) => {
     switchUser(username);
 
     try {
@@ -51,26 +61,29 @@ export const login = async (username: string, password: string, signIn: ({ }) =>
                 tokenType: "Bearer",
                 authState: { username }
             })
-        } catch (err) {
+            //authHeader = "Bearer " + Cookies.get('_auth');
+            console.log("signed in")
+        } catch (err: any) {
             return { success: false, message: "Username or password is incorrect"};
         }
 
         // set data key
         const localKeyResponse = await getLocalStorageKey("Bearer " + response.data.token);
+        
         if (localKeyResponse.success) {
             const localStorageKey = localKeyResponse.message;
             setDataKey(generateDataKey(password, salt!), localStorageKey);
         } else {
             return localKeyResponse;
         }
-    } catch (error) {
+    } catch (error: any) {
         return { success: false, message: "Login Error" };
     }
     return { success: true, message: "Login Success" };
 }
 
 // attempts to create and login a user
-export const createAccount = async (username: string, password: string, signIn: ({ }) => void) => {
+export const createAccount = async (username: string, password: string, signIn: (signInConfig: SignInParams) => boolean) => {
     try {
         const existsRes = await apiClient.get("/create/" + username);
         if (existsRes.data.exists)
@@ -86,7 +99,7 @@ export const createAccount = async (username: string, password: string, signIn: 
             return { success: false, message: "User already exists" };
 
         return await login(username, password, signIn, salt);
-    } catch (err) {
+    } catch (err: any) {
         return { success: false, message: "Unknown Account Creation Error"};
     }
 }
@@ -104,7 +117,7 @@ export const deleteAccount = async (authHeader: string) => {
         } else {
             return response;
         }
-    } catch (err) {
+    } catch (err: any) {
         const tokenError = err.response?.data?.isTokenError === true;
         return { success: false, message: "Unknown Account Deletion Error", isTokenError: tokenError };
     }
@@ -112,6 +125,7 @@ export const deleteAccount = async (authHeader: string) => {
 
 // gets the user's data from the server
 export const fetchData = async (authHeader: string) => {
+    console.log("Auth header used to actually fetch data: ", authHeader, currentUser)
     try {
         const response = (await apiClient.get("/data/", {
             headers: {
@@ -121,9 +135,27 @@ export const fetchData = async (authHeader: string) => {
         })).data;
         if (!response) return { success: false, message: "No response from server" }
         return response; // { success: bool, message/data: string }
-    } catch (err) {
+    } catch (err: any) {
         const tokenError = err.response?.data?.isTokenError === true;
         return { success: false, message: "Error fetching data", isTokenError: tokenError};
+    }
+}
+
+
+// gets the user's settings from the server
+export const fetchSettings = async (authHeader: string) => {
+    try {
+        const response = (await apiClient.get("/settings/", {
+            headers: {
+                'Authorization': authHeader,
+                'User': currentUser,
+            }
+        })).data;
+        if (!response) return { success: false, message: "No response from server" }
+        return response; // { success: bool, message/settings: string/{} }
+    } catch (err: any) {
+        const tokenError = err.response?.data?.isTokenError === true;
+        return { success: false, message: "Error fetching settings", isTokenError: tokenError };
     }
 }
 
@@ -139,9 +171,27 @@ export const updateServerData = async (data: string, authHeader: string) => {
             }
         })).data;
         return response; // { success: bool, message: string }
-    } catch (err) {
+    } catch (err: any) {
         const tokenError = err.response?.data?.isTokenError === true;
         return { success: false, message: "Error updating data", isTokenError: tokenError };
+    }
+}
+
+// save the user's settings on the server
+export const updateServerSettings = async (settings: Settings, authHeader: string) => {
+    try {
+        const response = (await apiClient.put("/settings/", {
+            settings: settings,
+        }, {
+            headers: {
+                'Authorization': authHeader,
+                'User': currentUser,
+            }
+        })).data;
+        return response; // { success: bool, message: string }
+    } catch (err: any) {
+        const tokenError = err.response?.data?.isTokenError === true;
+        return { success: false, message: "Error updating settings", isTokenError: tokenError };
     }
 }
 
@@ -155,7 +205,7 @@ export const getLocalStorageKey = async (authHeader: string) => {
         })).data;
         if (!response) return { success: false, message: "No response from server" }
         return response; // { success: bool, message: key/err }
-    } catch (err) {
+    } catch (err: any) {
         const tokenError = err.response?.data?.isTokenError === true;
         return { success: false, message: "Error fetching local key", isTokenError: tokenError };
     }
@@ -197,7 +247,7 @@ export const changePassword = async (currentPassword: string, newPassword: strin
         } else {
             return { success: false, message: "Failed to change Password" }
         }
-    } catch (err) {
+    } catch (err: any) {
         return { success: false, message: "Failed to change Password"}
     }
 }

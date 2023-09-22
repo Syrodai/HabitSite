@@ -3,6 +3,7 @@ import { useAuthHeader } from 'react-auth-kit';
 import { daysSince, today } from './date';
 import { fetchData, updateServerData, getLocalStorageKey } from './services/account';
 import { decryptData, encryptData, loadDataKey } from './services/data';
+import Cookies from 'js-cookie';
 
 export enum HabitStatus { PENDING = 1, DONE = 2, FAILED = 3 }; // should not be changed once data becomes permanently stored
 
@@ -24,7 +25,7 @@ interface HabitContextType {
     createHabit: (desc: string) => void;                            
     editHabit: (habit: Habit, newHabit: Habit) => void;             
     getStatus: (habit: Habit, date: string) => HabitStatus;         
-    loadHabits: () => { success: boolean, message: string };
+    loadHabits: () => Promise<any>;
     clearHabits: () => void;
     setSessionExpired: (sessionExpired: boolean) => void;
 }
@@ -32,7 +33,7 @@ interface HabitContextType {
 export const HabitContext = createContext<HabitContextType | null>(null);
 
 const HabitProvider = ({ children }: { children: ReactNode }) => {
-    const authHeader = useAuthHeader()();
+    const authHeader = useAuthHeader();
     // example data
     // set start dates to 5 days ago, 1 day ago, and just now
     const [habits, setHabits] = useState<Habit[]>([
@@ -80,7 +81,7 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
         const encrypted = encryptData(newData);
 
         setCurrentlyUpdating(true);
-        let response = (await updateServerData(encrypted, authHeader));
+        let response = (await updateServerData(encrypted, authHeader()));
         setCurrentlyUpdating(false);
         
 
@@ -121,7 +122,7 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
             const encrypted = encryptData(newData);
 
             setCurrentlyUpdating(true);
-            const response = (await updateServerData(encrypted, authHeader));
+            const response = (await updateServerData(encrypted, authHeader()));
             setCurrentlyUpdating(false);
             if (!response)
                 console.log("Delete habit failed: No response from server");
@@ -165,7 +166,7 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
         const encrypted = encryptData(newData);
 
         setCurrentlyUpdating(true);
-        const response = (await updateServerData(encrypted, authHeader));
+        const response = (await updateServerData(encrypted, authHeader()));
         setCurrentlyUpdating(false);
 
         if (!response)
@@ -191,7 +192,7 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
         const encrypted = encryptData(newData);
 
         setCurrentlyUpdating(true);
-        const response = (await updateServerData(encrypted, authHeader));
+        const response = (await updateServerData(encrypted, authHeader()));
         setCurrentlyUpdating(false);
 
         if (!response)
@@ -214,8 +215,10 @@ const HabitProvider = ({ children }: { children: ReactNode }) => {
     const loadHabits = async () => {
         setLoadingHabits(true);
 
-        const response = await fetchData(authHeader);
-        const keyResponse = await getLocalStorageKey(authHeader);
+        console.log("fetching data and local key with header: ", authHeader())
+        console.log("manually fetching header from cookies: ", Cookies.get('_auth'))
+        const response = await fetchData("Bearer " + Cookies.get('_auth')/*authHeader()*/);
+        const keyResponse = await getLocalStorageKey("Bearer " + Cookies.get('_auth')/*authHeader()*/);
 
         if (response.isTokenError || keyResponse.isTokenError) {
             setSessionExpired(true);

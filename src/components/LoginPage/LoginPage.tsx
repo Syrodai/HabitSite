@@ -8,6 +8,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import ColorModeSwitch from "../MainPage/ColorModeSwitch";
 import { login } from "../../services/account";
 
+import Cookies from 'js-cookie';
+
 const schema = z.object({
     username: z.string().min(1),
     password: z.string().min(1),
@@ -15,14 +17,13 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 interface Props {
-    setUser: (user: string) => void;
+    logIn: (user: string) => void;
 }
 
-const LoginPage = ({ setUser }: Props) => {
+const LoginPage = ({ logIn }: Props) => {
     const navigate = useNavigate();
     const signIn = useSignIn();
     const [loginErrorText, setLoginErrorText] = useState("");
-
     
     const {
         register,
@@ -32,10 +33,12 @@ const LoginPage = ({ setUser }: Props) => {
 
     const onSubmit = async (data: FieldValues) => {
         data.username = data.username.toLowerCase();
+        console.log("before signing in:", Cookies.get('_auth'));
         const result = await login(data.username, data.password, signIn)
+        console.log("after signing in:", Cookies.get('_auth'));
+        console.log("login result: ", result)
         if (result.success) {
-            const capitalizedName = data.username.charAt(0).toUpperCase() + data.username.slice(1).toLowerCase();
-            setUser({ capitalized: capitalizedName, lower: data.username });
+            await logIn(data.username)
             navigate("/main");
         } else {
             setLoginErrorText(result.message);

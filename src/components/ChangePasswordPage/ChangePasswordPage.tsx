@@ -13,7 +13,7 @@ const schema = z.object({
     newpassword: z.string().min(8, { message: 'Password must be at least 8 characters' }),
     confirmpassword: z.string()
 })
-    .refine((data: FormData) => data.confirmpassword === data.newpassword, { //console.log(data.confirmpassword, data.password, data.confirmpassword === data.password) &&
+    .refine((data: { oldpassword: string, newpassword: string, confirmpassword: string}) => data.confirmpassword === data.newpassword, { //console.log(data.confirmpassword, data.password, data.confirmpassword === data.password) &&
         message: "Confirmation must be identical",
         path: ['confirmpassword'],
     });

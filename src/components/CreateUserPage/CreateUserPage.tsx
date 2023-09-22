@@ -13,18 +13,18 @@ const schema = z.object({
     password: z.string().min(8, { message: 'Password must be at least 8 characters' }),
     confirmpassword: z.string()
 })
-    .refine((data: FormData) => data.confirmpassword === data.password, { //console.log(data.confirmpassword, data.password, data.confirmpassword === data.password) &&
+    .refine((data: { username: string, password: string, confirmpassword: string}) => data.confirmpassword === data.password, { //console.log(data.confirmpassword, data.password, data.confirmpassword === data.password) &&
     message: "Confirmation must be identical",
     path: ['confirmpassword'],
 });
 type FormData = z.infer<typeof schema>;
 
 interface Props {
-    setUser: (user: string) => void;
+    logIn: (user: string) => void;
 }
 
 
-const CreateUserPage = ({ setUser }: Props) => {
+const CreateUserPage = ({ logIn }: Props) => {
     const navigate = useNavigate();
     const signIn = useSignIn();
     const [createErrorText, setCreateErrorText] = useState("");
@@ -39,8 +39,7 @@ const CreateUserPage = ({ setUser }: Props) => {
         data.username = data.username.toLowerCase();
         const result = await createAccount(data.username, data.password, signIn);
         if (result.success) {
-            const capitalizedName = data.username.charAt(0).toUpperCase() + data.username.slice(1).toLowerCase();
-            setUser({ capitalized: capitalizedName, lower: data.username });
+            await logIn(data.username)
             navigate("/main");
         } else {
             setCreateErrorText(result.message);

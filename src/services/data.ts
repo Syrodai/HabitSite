@@ -28,7 +28,7 @@ export const setDataKey = (key: string, localStorageKey: string) => {
 export const loadDataKey = (localStorageKey: string) => {
     const encryptedDataKey = localStorage.getItem('dataKey');
     const iv = CryptoJS.enc.Utf8.parse('iv');
-    dataKey = CryptoJS.AES.decrypt(encryptedDataKey, localStorageKey, { iv: iv }).toString(CryptoJS.enc.Utf8);
+    dataKey = CryptoJS.AES.decrypt(encryptedDataKey!, localStorageKey, { iv: iv }).toString(CryptoJS.enc.Utf8);
 }
 
 export const encryptData = (data: Habit[], key?: string) => {
@@ -37,7 +37,7 @@ export const encryptData = (data: Habit[], key?: string) => {
     } else {
         const dataString = JSON.stringify(data);
         if(key === undefined) key = dataKey;
-        const iv = "iv";
+        const iv = CryptoJS.enc.Utf8.parse("iv");
         return CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(dataString), key, { iv: iv }).toString();
     }
 }
@@ -47,7 +47,7 @@ export const decryptData = (data: string) => {
         throw new Error('dataKey is not set');
     } else {
         const key = dataKey;
-        const iv = "iv";
+        const iv = CryptoJS.enc.Utf8.parse("iv");
         const decryptedString = CryptoJS.AES.decrypt(data, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
         return JSON.parse(decryptedString);
     }

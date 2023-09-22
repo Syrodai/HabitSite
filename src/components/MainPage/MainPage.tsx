@@ -1,5 +1,5 @@
 import { Heading, Box, Text } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { HabitContext } from "../../HabitProvider";
 import { SettingsContext } from "../../SettingsProvider";
 import ExpiredSessionModal from "../ExpiredSessionModal";
@@ -18,19 +18,10 @@ interface LoadResult {
 }
 
 const MainPage = ({ user, logOut }: Props) => {
-    const { loadHabits, clearHabits, sessionExpired } = useContext(HabitContext)!;
+    const { /*loadHabits, clearHabits,*/ sessionExpired } = useContext(HabitContext)!;
     const { settings } = useContext(SettingsContext)!;
 
-    const [loadResult, setLoadResult] = useState<LoadResult | null>(null);
-    
-    
-    useEffect(() => {
-        clearHabits();
-        const load = async () => {
-            setLoadResult(await loadHabits());
-        }
-        load();
-    }, [])
+    const [loadResult, /*setLoadResult*/] = useState<LoadResult | null>(null);
 
     return (<>
         <TopBar username={user.capitalized} logOut={logOut} />
