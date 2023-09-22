@@ -1,27 +1,12 @@
-# React + TypeScript + Vite
+# HabitSite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A website that tracks progress in the development of habits. Currently in progress.
+Users add habits to their account and mark daily whether or not they were successful.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Frontend written in React with Nodejs server. Uses MongoDB as the database.
+Data storage is designed to be secure with proper authentication and encrypted storage.
+Passwords are salted and hashed.
+Uses JSON web tokens to maintain sessions.
+Habit data is encrypted with AES using a key that is derived from their password and salt such that it cannot be read from the backend.
+Supports users changing their password.
+Currently uses HTTP to make requests. Will be moved to HTTPS before becoming public.
